@@ -1,19 +1,23 @@
+import requests
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-import requests
+from requests.exceptions import ConnectionError
 
 
 def get_licenses():
-    response = requests.get(
-        "https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json"
-    )
+    try:
+        response = requests.get(
+            "https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json"
+        )
+    except ConnectionError:
+        return {}
     data = response.json()
     licenses = {lic["licenseId"]: lic["name"] for lic in data["licenses"]}
     return licenses
 
 
 class License(models.Model):
-    SPDX_LICENCES = get_licenses()
+    # SPDX_LICENCES = get_licenses()
     name = models.CharField(
         _("name"),
         help_text=_(
