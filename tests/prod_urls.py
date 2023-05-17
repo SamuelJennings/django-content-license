@@ -5,7 +5,7 @@ from django.urls import path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    # path("", include("research_project.urls")),
+    # path("", include("licensing.urls")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

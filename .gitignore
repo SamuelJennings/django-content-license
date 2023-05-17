@@ -1,5 +1,7 @@
 # Temporary and binary files
 *~
+*.ruff_cache
+*.mypy_cache
 *.py[cod]
 *.so
 *.cfg
@@ -8,12 +10,14 @@
 *.orig
 *.log
 *.pot
-__pycache__/*
+**/__pycache__
 .cache/*
 .*.swp
 */.ipynb_checkpoints/*
 .DS_Store
 _test*.py
+/node_modules
+test.html
 
 # Project files
 .ropeproject
@@ -44,8 +48,8 @@ build/*
 dist/*
 sdist/*
 docs/api/*
-docs/_rst/*
-docs/_build/*
+docs/_rst
+docs/_build
 cover/*
 MANIFEST
 
@@ -60,8 +64,10 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 media/
-static/
+/static/
 /*.sqlite3
+
+*/static/vendor/*
 
 # Celery stuff
 celerybeat-schedule
@@ -75,3 +81,5 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+dist

@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "research_project",
+    "licensing",
     # "drf_auto_endpoint",
     # if your app has other dependencies that need to be added to the site
     # they should be added here

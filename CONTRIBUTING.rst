@@ -36,8 +36,8 @@ is open to whoever wants to implement it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-Django Licensing could always use more documentation, whether as part of the 
-official Django Licensing docs, in docstrings, or even on the web in blog posts,
+Django Django Licensing could always use more documentation, whether as part of the 
+official Django Django Licensing docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 Submit Feedback
@@ -109,4 +109,4 @@ Tips
 
 To run a subset of tests::
 
-    $ python -m unittest tests.test_licensing
+    $ python -m unittest tests.test_research_project

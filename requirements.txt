@@ -1,7 +1,0 @@
-django-appconf
-django-model-utils
-django-sortedm2m
-django-taggit
-python-dateutil
-requests
-
