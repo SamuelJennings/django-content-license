@@ -18,7 +18,7 @@ SECRET_KEY = "=bodvqgkt@)emfe2!($i#1zd(x27@u!9*9+)^$8bu#sqsmm^*n"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS: list = []
 
 # Application definition
 
@@ -29,13 +29,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "licensing",
+    "research_project",
+    # "drf_auto_endpoint",
     # if your app has other dependencies that need to be added to the site
     # they should be added here
-    "taggit",
-    "sortedm2m",
-    "easy_thumbnails",
+    # "taggit",
+    # "sortedm2m",
+    # "formset",
+    # "easy_thumbnails",
 ]
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -47,7 +50,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "tests.urls"
+ROOT_URLCONF = "tests.dev_urls"
 
 TEMPLATES = [
     {
@@ -112,8 +115,40 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
-STATIC_ROOT = "staticfiles"
+STATIC_ROOT = "static"
 STATIC_URL = "/static/"
 
 MEDIA_ROOT = "media"
 MEDIA_URL = "/media/"
+
+X_FRAME_OPTIONS = "SAMEORIGIN"
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+    }
+}
+
+# STATIC_URL = '/static/'
+# STATIC_ROOT = 'dist/static/'
+STATICFILES_DIRS = (
+    # os.path.join(BASE_DIR, 'static'),
+    # This defines a prefix so the url paths will become `/static/node_modules/...`
+    ("node_modules", os.path.join(BASE_DIR, "node_modules/")),
+)
+
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 25,
+    "DEFAULT_FILTER_BACKENDS": (
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.SearchFilter",
+        "rest_framework.filters.OrderingFilter",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticatedOrReadOnly",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+    ),
+}
