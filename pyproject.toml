@@ -183,7 +183,7 @@ python =
 passenv = PYTHON_VERSION
 allowlist_externals = poetry
 commands =
-    poetry install -v --without docs
+    pip install -r requirements.txt
     pytest --doctest-modules tests --cov --cov-config=pyproject.toml --cov-report=xml
     mypy
 """
