@@ -22,7 +22,7 @@ def get_license_creator(model_instance):
 
 
 def html_snippet(model_instance, field_name):
-    license = getattr(model_instance, field_name)
+    license = getattr(model_instance, field_name)  # noqa: A001
     snippet = render_to_string("licensing/snippet.html", {"object": model_instance, "license": license})
     return mark_safe(snippet)
 
