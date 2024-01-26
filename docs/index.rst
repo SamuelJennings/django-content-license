@@ -1,4 +1,4 @@
-Welcome to Django Licensing's documentation!
+Welcome to Django Content License's documentation!
 ==============================================
 
 Contents:

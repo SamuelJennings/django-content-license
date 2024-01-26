@@ -4,9 +4,9 @@ Installation
 
 At the command line::
 
-    $ easy_install django-licensing
+    $ easy_install django-content-license
 
 Or, if you have virtualenvwrapper installed::
 
-    $ mkvirtualenv django-licensing
-    $ pip install django-licensing
+    $ mkvirtualenv django-content-license
+    $ pip install django-content-license

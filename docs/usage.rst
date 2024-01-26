@@ -2,7 +2,7 @@
 Usage
 =====
 
-To use Django Licensing in a project, add it to your `INSTALLED_APPS`:
+To use Django Content License in a project, add it to your `INSTALLED_APPS`:
 
 .. code-block:: python
 
@@ -12,7 +12,7 @@ To use Django Licensing in a project, add it to your `INSTALLED_APPS`:
         ...
     )
 
-Add Django Licensing's URL patterns:
+Add Django Content License's URL patterns:
 
 .. code-block:: python
 

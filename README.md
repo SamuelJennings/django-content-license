@@ -1,13 +1,12 @@
-# Django Licensing
+# Django Content License
 
-[![Github Build](https://github.com/SSJenny90/django-licensing/actions/workflows/build.yml/badge.svg)](https://github.com/SSJenny90/django-licensing/actions/workflows/build.yml)
-[![Github Docs](https://github.com/SSJenny90/django-licensing/actions/workflows/tests.yml/badge.svg)](https://github.com/SSJenny90/django-licensing/actions/workflows/docs.yml)
-[![CodeCov](https://codecov.io/gh/SSJenny90/django-licensing/branch/main/graph/badge.svg?token=0Q18CLIKZE)](https://codecov.io/gh/SSJenny90/django-licensing)
-![GitHub](https://img.shields.io/github/license/SSJenny90/django-licensing)
-![GitHub last commit](https://img.shields.io/github/last-commit/SSJenny90/django-licensing)
-![PyPI](https://img.shields.io/pypi/v/django-licensing)
+[![Github Build](https://github.com/SSJenny90/django-content-license/actions/workflows/build.yml/badge.svg)](https://github.com/SSJenny90/django-content-license/actions/workflows/build.yml)
+[![Github Tests](https://github.com/SSJenny90/django-content-license/actions/workflows/tests.yml/badge.svg)](https://github.com/SSJenny90/django-content-license/actions/workflows/tests.yml)
+![GitHub](https://img.shields.io/github/license/SSJenny90/django-content-license)
+![GitHub last commit](https://img.shields.io/github/last-commit/SSJenny90/django-content-license)
+<!-- ![PyPI](https://img.shields.io/pypi/v/django-content-license) -->
 
-Django Licensing is a simple app that allows you to associate a content license with a model instance and display appropriate attribution in your HTML templates.
+Django Content License is a simple app that allows you to associate a content license with a model instance and display appropriate attribution in your HTML templates.
 
 ## What's included?
 
@@ -32,9 +31,9 @@ A `LicenseField` that subclasses `ForeignKey` and points towards the `licensing.
 Quickstart
 ----------
 
-Install Django Licensing::
+Install Django Content License::
 
-    pip install django-licensing
+    pip install django-content-license
 
 Add it to your `INSTALLED_APPS`:
 
