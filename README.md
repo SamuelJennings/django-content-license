@@ -1,4 +1,4 @@
-# Django Django Licensing 
+# Django Licensing 
 
 [![Github Build](https://github.com/SSJenny90/django-licensing/actions/workflows/build.yml/badge.svg)](https://github.com/SSJenny90/django-licensing/actions/workflows/build.yml)
 [![Github Docs](https://github.com/SSJenny90/django-licensing/actions/workflows/docs.yml/badge.svg)](https://github.com/SSJenny90/django-licensing/actions/workflows/docs.yml)
@@ -6,29 +6,37 @@
 ![GitHub](https://img.shields.io/github/license/SSJenny90/django-licensing)
 ![GitHub last commit](https://img.shields.io/github/last-commit/SSJenny90/django-licensing)
 ![PyPI](https://img.shields.io/pypi/v/django-licensing)
-<!-- [![RTD](https://readthedocs.org/projects/django-licensing/badge/?version=latest)](https://django-licensing.readthedocs.io/en/latest/readme.html) -->
-<!-- [![Documentation](https://github.com/SSJenny90/django-licensing/actions/workflows/build-docs.yml/badge.svg)](https://github.com/SSJenny90/django-licensing/actions/workflows/build-docs.yml) -->
-<!-- [![PR](https://img.shields.io/github/issues-pr/SSJenny90/django-licensing)](https://github.com/SSJenny90/django-licensing/pulls)
-[![Issues](https://img.shields.io/github/issues-raw/SSJenny90/django-licensing)](https://github.com/SSJenny90/django-licensing/pulls) -->
-<!-- ![PyPI - Downloads](https://img.shields.io/pypi/dm/django-licensing) -->
-<!-- ![PyPI - Status](https://img.shields.io/pypi/status/django-licensing) -->
 
-A Django application for managing collections of scientific instruments
+Django Licensing is a simple app that allows you to associate a content license with a model instance and display appropriate attribution in your HTML templates.
 
-Documentation
--------------
+## What's included?
 
-The full documentation is at https://ssjenny90.github.io/django-licensing/
+### License Model
+
+A simple `License` model that can be associated with any other model in your project. The `License` model stores the following information:
+
+* name: The name of the license (e.g. CC-BY-4.0, CC0 1.0, MIT, etc.)
+* description: A description of the license
+* text: The full text of the license
+* URL: A Canonical URL for the license
+
+### LicenseField
+
+A `LicenseField` that subclasses `ForeignKey` and points towards the `licensing.License` model.
+
+* Sets default translatable verbose_name and help_text for the field
+* Sets default on_delete behavior of `models.PROTECT` to ensure that licenses cannot be deleted if they are associated with any database entries
+* Adds a get_FOO_display method to the model that returns an HTML snippet containing attribution information for the associated database entry
+
 
 Quickstart
 ----------
 
-Install Django Django Licensing::
+Install Django Licensing::
 
     pip install django-licensing
 
 Add it to your `INSTALLED_APPS`:
-
 
     INSTALLED_APPS = (
         ...
@@ -36,18 +44,22 @@ Add it to your `INSTALLED_APPS`:
         ...
     )
 
-Add Django Django Licensing's URL patterns:
+add a `LicenseField` to any of your models:
 
-    urlpatterns = [
+    from django.db import models
+    from licensing.models import LicenseField
+
+    class MyModel(models.Model):
         ...
-        path('', include("licensing.urls")),
+        license = LicenseField()
         ...
-    ]
 
-Features
---------
+then, make sure to run `makemigrations` and `migrate` to apply the changes to your database.
 
-* TODO
+That's it. Now you can access the license information for any instance of your model in your templates:
+
+    {{ mymodel.get_license_display }}
+
 
 Running Tests
 -------------

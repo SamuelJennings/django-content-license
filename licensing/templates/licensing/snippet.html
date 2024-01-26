@@ -1,0 +1,4 @@
+{% load i18n  %}
+{% comment %} {% blocktrans %} {% endcomment %}
+<a href="{{ object.get_absolute_url }}">{{ object }}</a> by <a href="{{ object.creators.get_absolute_url }}">{{ object.creators }}</a> is licensed under <a href="{{license.URL}}" target="_blank">{{license.name}}</a>
+{% comment %} {% endblocktrans %} {% endcomment %}
