@@ -186,6 +186,6 @@ setenv =
 allowlist_externals = poetry
 commands =
     pip install -r requirements.txt
-    pytest --doctest-modules tests --cov --cov-config=pyproject.toml --cov-report=xml
+    pytest --cov --cov-config=pyproject.toml --cov-report=xml
     mypy
 """

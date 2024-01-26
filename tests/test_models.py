@@ -8,13 +8,15 @@ class LicenseModelTest(TestCase):
         self.license = License.objects.create(
             name="Test License",
             URL="http://example.com/license",
-            content="This is a test license",
+            description="This is a test license",
+            text="This is a test license",
         )
 
     def test_license_creation(self):
         self.assertEqual(self.license.name, "Test License")
         self.assertEqual(self.license.URL, "http://example.com/license")
-        self.assertEqual(self.license.content, "This is a test license")
+        self.assertEqual(self.license.description, "This is a test license")
+        self.assertEqual(self.license.text, "This is a test license")
         self.assertEqual(self.license.slug, "test-license")
 
     def test_string_representation(self):

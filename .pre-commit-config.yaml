@@ -32,7 +32,7 @@ repos:
       - id: poetry-check
       - id: poetry-lock
       - id: poetry-export
-        args: ["-o", "requirements.txt", "--without-hashes"]
+        args: ["-o", "requirements.txt", "--with=dev", "--without-hashes"]
 
 
 # sets up .pre-commit-ci.yaml to ensure pre-commit dependencies stay up to date

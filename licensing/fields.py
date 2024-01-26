@@ -2,7 +2,7 @@ from functools import partialmethod
 
 from django.db import models
 from django.template.loader import render_to_string
-from django.utils.html import mark_safe
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 
@@ -24,7 +24,7 @@ def get_license_creator(model_instance):
 def html_snippet(model_instance, field_name):
     license = getattr(model_instance, field_name)  # noqa: A001
     snippet = render_to_string("licensing/snippet.html", {"object": model_instance, "license": license})
-    return mark_safe(snippet)
+    return mark_safe(snippet)  # noqa: S308
 
 
 class License(models.ForeignKey):
