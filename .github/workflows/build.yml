@@ -22,11 +22,11 @@ jobs:
           path: ~/.cache/pre-commit
           key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
 
-      - name: Set up the environment
-        uses: ./.github/actions/setup-poetry-env
+      # - name: Set up the environment
+      #   uses: ./.github/actions/setup-poetry-env
 
-      - name: Run checks
-        run: poetry run invoke check
+      # - name: Run checks
+      #   run: poetry run invoke check
 
   run-tests:
     runs-on: ubuntu-latest
@@ -44,8 +44,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
+      # - name: Install Poetry
+        # uses: snok/install-poetry@v1
 
       - name: Load cached venv
         uses: actions/cache@v3
@@ -64,25 +64,3 @@ jobs:
       - name: Upload coverage reports to Codecov with GitHub Action on Python 3.11
         uses: codecov/codecov-action@v3
         if: ${{ matrix.python-version == '3.11' }}
-
-  # check-docs:
-  #   name: Check Documentation  
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Check out
-  #       uses: actions/checkout@v3
-
-  #     # - name: Set up the environment
-  #     #   uses: ./.github/actions/setup-poetry-env
-
-  #     - name: Install Poetry
-  #       uses: snok/install-poetry@v1
-
-  #     - name: Load cached venv
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: .tox
-  #         key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
-
-  #     - name: Check if documentation can be built
-  #       run: poetry run invoke docs

@@ -1,4 +1,4 @@
-# Django Licensing 
+# Django Licensing
 
 [![Github Build](https://github.com/SSJenny90/django-licensing/actions/workflows/build.yml/badge.svg)](https://github.com/SSJenny90/django-licensing/actions/workflows/build.yml)
 [![Github Docs](https://github.com/SSJenny90/django-licensing/actions/workflows/docs.yml/badge.svg)](https://github.com/SSJenny90/django-licensing/actions/workflows/docs.yml)
@@ -80,4 +80,3 @@ Development commands
 
 Credits
 -------
-
