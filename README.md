@@ -1,7 +1,7 @@
 # Django Licensing
 
 [![Github Build](https://github.com/SSJenny90/django-licensing/actions/workflows/build.yml/badge.svg)](https://github.com/SSJenny90/django-licensing/actions/workflows/build.yml)
-[![Github Docs](https://github.com/SSJenny90/django-licensing/actions/workflows/docs.yml/badge.svg)](https://github.com/SSJenny90/django-licensing/actions/workflows/docs.yml)
+[![Github Docs](https://github.com/SSJenny90/django-licensing/actions/workflows/tests.yml/badge.svg)](https://github.com/SSJenny90/django-licensing/actions/workflows/docs.yml)
 [![CodeCov](https://codecov.io/gh/SSJenny90/django-licensing/branch/main/graph/badge.svg?token=0Q18CLIKZE)](https://codecov.io/gh/SSJenny90/django-licensing)
 ![GitHub](https://img.shields.io/github/license/SSJenny90/django-licensing)
 ![GitHub last commit](https://img.shields.io/github/last-commit/SSJenny90/django-licensing)
