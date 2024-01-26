@@ -181,6 +181,8 @@ python =
 
 [testenv]
 passenv = PYTHON_VERSION
+setenv =
+    DJANGO_SETTINGS_MODULE=tests.settings
 allowlist_externals = poetry
 commands =
     pip install -r requirements.txt

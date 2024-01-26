@@ -1,3 +1,5 @@
+from functools import partialmethod
+
 from django.test import TestCase
 from example.models import TestModel  # replace with your actual model name
 
