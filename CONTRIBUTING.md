@@ -46,6 +46,9 @@ If you are proposing a feature:
 
 ## Get Started!
 
+>[!Note]
+> This package uses Poetry for dependency management and packaging. If you are unfamiliar with Poetry, please see the [Poetry documentation](https://python-poetry.org/docs/) and install the package before continuing.
+
 Ready to contribute? Here's how to set up `django-content-license` for local development.
 
 1. Fork the `django-content-license` repo on GitHub.
@@ -53,11 +56,10 @@ Ready to contribute? Here's how to set up `django-content-license` for local dev
 
     $ git clone git@github.com:your_name_here/django-content-license.git
 
-3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
+3. Install dev environment using poetry and activate it:
 
-    $ mkvirtualenv django-content-license
-    $ cd django-content-license/
-    $ python setup.py develop
+    $ poetry install
+    $ poetry shell
 
 4. Create a branch for local development::
 
@@ -65,37 +67,32 @@ Ready to contribute? Here's how to set up `django-content-license` for local dev
 
    Now you can make your changes locally.
 
-5. When you're done making changes, check that your changes pass flake8 and the
-   tests, including testing other Python versions with tox::
+5. Write tests for any code changes where applicable.
 
-        $ flake8 licensing tests
-        $ python setup.py test
-        $ tox
+> [!Note]
+> This package provides some helpful utility scripts via the `invoke` package that help with code quality and testing. Invoke is installed with the dev dependencies, so you should be able to run the following commands from the root of the project when you are in the virtual environment. To see what commands are available to you, run:
 
-   To get flake8 and tox, just pip install them into your virtualenv.
+    $ invoke --list
 
-6. Commit your changes and push your branch to GitHub::
+6. When you're done making changes, check that your changes pass all code quality checks.
+
+    $ invoke check
+
+7. Now make sure all tests are passing, including testing other Python versions with tox
+
+    $ invoke test
+
+8. Commit your changes and push your branch to GitHub::
 
     $ git add .
     $ git commit -m "Your detailed description of your changes."
     $ git push origin name-of-your-bugfix-or-feature
 
-7. Submit a pull request through the GitHub website.
+9.  Submit a pull request through the GitHub website.
 
 ## Pull Request Guidelines
 
 Before you submit a pull request, check that it meets these guidelines:
 
-1. The pull request should include tests.
-2. If the pull request adds functionality, the docs should be updated. Put
-   your new functionality into a function with a docstring, and add the
-   feature to the list in README.rst.
-3. The pull request should work for Python 2.6, 2.7, and 3.3, and for PyPy. Check
-   https://travis-ci.org/SSJenny90/django-content-license/pull_requests
-   and make sure that the tests pass for all supported Python versions.
-
-## Tips
-
-To run a subset of tests::
-
-    $ python -m unittest tests.test_research_project
+1. Pull requests that modify functionality should include tests and udpated documentation.
+2. Make sure that all tests pass for all supported Python versions.

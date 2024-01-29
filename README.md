@@ -8,6 +8,9 @@
 
 Django Content License is a simple app that allows you to associate a content license with a model instance and display appropriate attribution in your HTML templates.
 
+> [!NOTE]
+> There is already a published package similar in purpose to this one: [django-licensing](https://pypi.org/project/django-licensing/). Please see the [quick comparison](#comparison-with-django-licensing) below for why I chose to create a new one.
+
 ## What's included?
 
 ### License Model
@@ -28,10 +31,9 @@ A `LicenseField` that subclasses `ForeignKey` and points towards the `licensing.
 * Adds a get_FOO_display method to the model that returns an HTML snippet containing attribution information for the associated database entry
 
 
-Quickstart
-----------
+## Quickstart
 
-Install Django Content License::
+Install Django Content License:
 
     pip install django-content-license
 
@@ -46,7 +48,7 @@ Add it to your `INSTALLED_APPS`:
 add a `LicenseField` to any of your models:
 
     from django.db import models
-    from licensing.models import LicenseField
+    from licensing.field import LicenseField
 
     class MyModel(models.Model):
         ...
@@ -60,22 +62,32 @@ That's it. Now you can access the license information for any instance of your m
     {{ mymodel.get_license_display }}
 
 
-Running Tests
--------------
+## Comparison with `django-licensing`
 
-Does the code actually work?
+`django-licensing` is a package that provides similar functionality to this package. It was created some 10 years ago, was last released in 2014 and last updated in 2020. Regardless, it probably gets the job done in most cases. However, there were some implementation details that I didn't site well with me and some more capabilities that I wanted to add.
 
-    source <YOURVIRTUALENV>/bin/activate
-    (myenv) $ pip install tox
-    (myenv) $ tox
+### Things I didn't like
 
+* It require you to subclass an abstract `Licensed` model in your own project.
+* The `Licensed` model provides a FK to the `License` model which hardcodes the `on_delete` to `models.CASCADE`. This means that if your DB admin deletes a license (perhaps by mistake), they will also delete any database entries that are associated with that license. Yikes!
+* `django-licensing` does not store the full license text. Having the full text allows us to provide the entire license with any content downloads.
+* No descriptions of licenses provided.
+* Included initial data are long outdated.
 
-Development commands
----------------------
+### What this package does instead
 
-    pip install -r requirements_dev.txt
-    invoke -l
+* Include licenses in your models via a custom Django field, rather than subclassing an abstract model.
+* Provide sensible field defaults for `verbose_name`, `help_text`, and `on_delete` which can all be overridden if desired.
+* `on_delete` defaults to `models.PROTECT` to ensure that licenses cannot be accidentally deleted if they are associated with existing database entries.
+* Provide a default `get_FOO_display` method that returns an HTML snippet containing attribution information for the associated database entry.
+* Store the full license text in the database.
+* Provide helpful description of each license.
+* Provides initial data that includes the latest Creative Commons licenses (v4.0).
 
+## Contributing
 
-Credits
--------
+Check out the the contributing guidelines in [CONTRIBUTING.md](CONTRIBUTING.md) for more details on how to contribute to this project.
+
+## Credits
+
+See [AUTHORS.md](AUTHORS.md) for a list of contributors to this project and appropriate credits.

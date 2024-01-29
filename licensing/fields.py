@@ -27,7 +27,7 @@ def html_snippet(model_instance, field_name):
     return mark_safe(snippet)  # noqa: S308
 
 
-class License(models.ForeignKey):
+class LicenseField(models.ForeignKey):
     """A custom foreign key field pointing to the License model"""
 
     def __init__(self, *args, **kwargs):

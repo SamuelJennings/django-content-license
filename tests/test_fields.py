@@ -3,13 +3,12 @@ from functools import partialmethod
 from django.test import TestCase
 from example.models import TestModel  # replace with your actual model name
 
-from licensing.fields import License
-from licensing.models import License as LicenseModel
+from licensing.models import License
 
 
 class LicenseFieldTest(TestCase):
     def setUp(self):
-        self.license = LicenseModel.objects.create(
+        self.license = License.objects.create(
             name="Test License",
             URL="http://example.com/license",
             description="This is a test license",

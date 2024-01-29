@@ -3,7 +3,7 @@ from django.test import TestCase
 from licensing.models import License
 
 
-class LicenseModelTest(TestCase):
+class LicenseTest(TestCase):
     def setUp(self):
         self.license = License.objects.create(
             name="Test License",
