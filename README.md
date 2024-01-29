@@ -1,9 +1,9 @@
 # Django Content License
 
-[![Github Build](https://github.com/SSJenny90/django-content-license/actions/workflows/build.yml/badge.svg)](https://github.com/SSJenny90/django-content-license/actions/workflows/build.yml)
-[![Github Tests](https://github.com/SSJenny90/django-content-license/actions/workflows/tests.yml/badge.svg)](https://github.com/SSJenny90/django-content-license/actions/workflows/tests.yml)
-![GitHub](https://img.shields.io/github/license/SSJenny90/django-content-license)
-![GitHub last commit](https://img.shields.io/github/last-commit/SSJenny90/django-content-license)
+[![Github Build](https://github.com/Geoluminate/django-content-license/actions/workflows/build.yml/badge.svg)](https://github.com/Geoluminate/django-content-license/actions/workflows/build.yml)
+[![Github Tests](https://github.com/Geoluminate/django-content-license/actions/workflows/tests.yml/badge.svg)](https://github.com/Geoluminate/django-content-license/actions/workflows/tests.yml)
+![GitHub](https://img.shields.io/github/license/Geoluminate/django-content-license)
+![GitHub last commit](https://img.shields.io/github/last-commit/Geoluminate/django-content-license)
 <!-- ![PyPI](https://img.shields.io/pypi/v/django-content-license) -->
 
 Django Content License is a simple app that allows you to associate a content license with a model instance and display appropriate attribution in your HTML templates.
