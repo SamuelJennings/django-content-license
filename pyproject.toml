@@ -2,11 +2,11 @@
 name = "django-content-license"
 version = "0.2.0"
 description = "Store license information alongside your Django data models"
-authors = ["Sam Jennings <samuel.scott.jennings@gmail.com>"]
+authors = ["Sam Jennings"]
 license = "MIT"
 readme = "README.md"
 packages = [{include = "licensing"}]
-homepage = "https://github.com/SSJenny90/django-content-license"
+homepage = "https://github.com/SamuelJennings/django-content-license"
 keywords = ["django", "research", "science", "datasets", "research management", "open source", "open science", "FAIR"]
 classifiers = [
     "Development Status :: 3 - Alpha",

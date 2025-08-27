@@ -90,7 +90,7 @@ git commit -m "Apply pre-commit fixes"
 ```bash
 # Bump version and create release
 poetry run invoke release patch   # for bug fixes
-poetry run invoke release minor   # for new features  
+poetry run invoke release minor   # for new features
 poetry run invoke release major   # for breaking changes
 ```
 

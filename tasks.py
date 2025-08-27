@@ -17,8 +17,8 @@ def check(c):
     """
     Check the consistency of the project using various tools
     """
-    print("🚀 Checking Poetry lock file consistency with 'pyproject.toml': Running poetry lock --check")
-    c.run("poetry lock --check")
+    print("🚀 Checking Poetry lock file consistency with 'pyproject.toml': Running poetry check --lock")
+    c.run("poetry check --lock")
 
     print("🚀 Linting code: Running pre-commit")
     c.run("poetry run pre-commit run -a")
