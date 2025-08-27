@@ -17,7 +17,7 @@ To add a new language translation:
    ```bash
    python manage.py makemessages -l <language_code>
    ```
-   
+
    For example, for French:
    ```bash
    python manage.py makemessages -l fr

@@ -12,7 +12,7 @@ from .models import TestModel
 class TestModelAdmin(admin.ModelAdmin):
     list_display = [
         # "name",
-        "license",
+        "content_license",
         # "get_license_display",
     ]
 

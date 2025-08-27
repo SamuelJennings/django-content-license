@@ -25,11 +25,27 @@ jobs:
           path: ~/.cache/pre-commit
           key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
 
+      - name: Check Poetry lock file consistency
+        run: poetry lock --check
+
       - name: Run pre-commit checks
         run: poetry run pre-commit run --all-files
 
-      - name: Check Poetry lock file consistency
-        run: poetry lock --check
+      - name: Verify Poetry export is up to date
+        run: |
+          # Generate requirements.txt and check if it matches the committed version
+          poetry export -o requirements-check.txt --with=dev --without-hashes
+          if ! cmp -s requirements.txt requirements-check.txt; then
+            echo "❌ requirements.txt is out of date. Please run 'poetry export -o requirements.txt --with=dev --without-hashes' and commit the changes."
+            echo "Expected:"
+            cat requirements-check.txt
+            echo "Actual:"
+            cat requirements.txt
+            exit 1
+          else
+            echo "✅ requirements.txt is up to date"
+          fi
+          rm requirements-check.txt
 
       - name: Static type checking with mypy
         run: poetry run mypy licensing/ || true  # Allow failure for now

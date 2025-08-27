@@ -21,22 +21,14 @@ class License(models.Model):
         null=True,
     )
 
-    text = models.TextField(
-        _("text"),
-        help_text=_("The full text of the license")
-    )
+    text = models.TextField(_("text"), help_text=_("The full text of the license"))
 
     is_active = models.BooleanField(
-        _("is active"),
-        default=True,
-        help_text=_("Whether this license is still recommended for use")
+        _("is active"), default=True, help_text=_("Whether this license is still recommended for use")
     )
 
     deprecated_date = models.DateField(
-        _("deprecated date"),
-        null=True,
-        blank=True,
-        help_text=_("Date when this license was deprecated")
+        _("deprecated date"), null=True, blank=True, help_text=_("Date when this license was deprecated")
     )
 
     created_at = models.DateTimeField(_("created at"), auto_now_add=True)
@@ -47,10 +39,10 @@ class License(models.Model):
     class Meta:
         verbose_name = _("license")
         verbose_name_plural = _("licenses")
-        ordering = ['name']
+        ordering = ["name"]
         indexes = [
-            models.Index(fields=['is_active']),
-            models.Index(fields=['slug']),
+            models.Index(fields=["is_active"]),
+            models.Index(fields=["slug"]),
         ]
 
     def __str__(self):
@@ -68,7 +60,7 @@ class License(models.Model):
     def short_description(self):
         """Truncated description for admin list display"""
         if self.description:
-            return (self.description[:100] + '...') if len(self.description) > 100 else self.description
+            return (self.description[:100] + "...") if len(self.description) > 100 else self.description
         return _("No description")
 
     @property
@@ -84,27 +76,23 @@ class License(models.Model):
 
         # Validate that deprecated licenses have a deprecated_date
         if not self.is_active and not self.deprecated_date:
-            raise ValidationError({
-                'deprecated_date': _('Deprecated licenses must have a deprecated date.')
-            })
+            raise ValidationError({"deprecated_date": _("Deprecated licenses must have a deprecated date.")})
 
         # Validate that active licenses don't have a deprecated_date
         if self.is_active and self.deprecated_date:
-            raise ValidationError({
-                'deprecated_date': _('Active licenses should not have a deprecated date.')
-            })
+            raise ValidationError({"deprecated_date": _("Active licenses should not have a deprecated date.")})
 
     @classmethod
     def get_recommended_licenses(cls):
         """Get currently recommended licenses"""
-        return cls.objects.filter(is_active=True).order_by('name')
+        return cls.objects.filter(is_active=True).order_by("name")
 
     def save(self, *args, **kwargs):
         # Auto-generate slug if not provided
         if not self.slug:
             base_slug = slugify(self.name)
             if not base_slug:  # Handle edge case where name doesn't generate a valid slug
-                base_slug = 'license'
+                base_slug = "license"
 
             # Ensure unique slug with optimized query
             slug = base_slug
@@ -113,7 +101,7 @@ class License(models.Model):
             if self.pk:
                 queryset = queryset.exclude(pk=self.pk)
 
-            existing_slugs = set(queryset.values_list('slug', flat=True))
+            existing_slugs = set(queryset.values_list("slug", flat=True))
 
             while slug in existing_slugs:
                 slug = f"{base_slug}-{counter}"

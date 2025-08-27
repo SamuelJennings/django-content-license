@@ -56,10 +56,10 @@ class Dataset(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
     license = LicenseField()  # This field links to a License
-    
+
     def __str__(self):
         return self.name
-    
+
     def get_absolute_url(self):
         return f"/datasets/{self.pk}/"
 ```
@@ -85,7 +85,7 @@ mit_license = License.objects.create(
 <div class="dataset">
     <h2>{{ dataset.name }}</h2>
     <p>{{ dataset.description }}</p>
-    
+
     <!-- Automatic attribution display -->
     <div class="license-attribution">
         {{ dataset.get_license_display }}
@@ -95,7 +95,7 @@ mit_license = License.objects.create(
 
 This will output properly formatted HTML like:
 ```html
-<a href="/datasets/1/">My Dataset</a> is licensed under 
+<a href="/datasets/1/">My Dataset</a> is licensed under
 <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>
 ```
 
@@ -107,7 +107,7 @@ This will output properly formatted HTML like:
 class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
-    
+
     # Custom license field with specific options
     license = LicenseField(
         verbose_name="Content License",
@@ -125,10 +125,10 @@ If your model has creator information, the attribution will automatically includ
 class Research(models.Model):
     title = models.CharField(max_length=200)
     license = LicenseField()
-    
+
     # The template will automatically look for these fields
     creators = models.CharField(max_length=200)  # Or ForeignKey to User/Author model
-    
+
     def get_absolute_url(self):
         return f"/research/{self.pk}/"
 
@@ -197,8 +197,8 @@ license.clean()  # Raises ValidationError
 
 # Active licenses shouldn't have deprecated_date
 license = License(
-    name="Active License", 
-    is_active=True, 
+    name="Active License",
+    is_active=True,
     deprecated_date=timezone.now().date()
 )
 license.clean()  # Raises ValidationError
@@ -229,7 +229,7 @@ pytest -m "not slow"  # Skip slow tests
 ### Test Organization
 
 - `tests/test_models.py` - Model functionality (Django TestCase)
-- `tests/test_fields.py` - Field functionality (Django TestCase)  
+- `tests/test_fields.py` - Field functionality (Django TestCase)
 - `tests/test_pytest_models.py` - Model tests (pytest)
 - `tests/test_pytest_fields.py` - Field tests (pytest)
 - `tests/test_integration.py` - Integration tests (pytest)
@@ -248,7 +248,7 @@ def test_my_model_with_license():
         canonical_url="https://example.com/license",
         text="License text"
     )
-    
+
     # Test your model here
     instance = MyModel.objects.create(license=license_obj)
     assert instance.license == license_obj
@@ -313,7 +313,7 @@ from django.db import migrations
 def migrate_licenses(apps, schema_editor):
     OldLicense = apps.get_model('old_app', 'License')
     NewLicense = apps.get_model('licensing', 'License')
-    
+
     for old_license in OldLicense.objects.all():
         NewLicense.objects.create(
             name=old_license.name,
@@ -327,7 +327,7 @@ class Migration(migrations.Migration):
         ('licensing', '0001_initial'),
         ('old_app', '0001_initial'),
     ]
-    
+
     operations = [
         migrations.RunPython(migrate_licenses),
     ]
@@ -343,7 +343,7 @@ class ResearchPaper(models.Model):
     license = LicenseField(
         help_text="Choose appropriate license for your research data"
     )
-    
+
     # For dataset licensing
     dataset_license = LicenseField(
         verbose_name="Dataset License",
@@ -422,4 +422,3 @@ See [HISTORY.md](HISTORY.md) for a complete changelog.
 ---
 
 Made with ❤️ by the Django community
-

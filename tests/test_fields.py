@@ -285,22 +285,22 @@ class LicenseIntegrationTest(TestCase):
         from example.models import TestModel
 
         # Create a test instance
-        test_obj = TestModel.objects.create(license=self.license)
+        test_obj = TestModel.objects.create(content_license=self.license)
 
         # Test that the license relationship works
-        self.assertEqual(test_obj.license, self.license)
-        self.assertEqual(test_obj.license.name, 'Apache License 2.0')
+        self.assertEqual(test_obj.content_license, self.license)
+        self.assertEqual(test_obj.content_license.name, 'Apache License 2.0')
 
-        # Test that the get_license_display method exists and is callable
-        self.assertTrue(hasattr(test_obj, 'get_license_display'))
-        self.assertTrue(callable(test_obj.get_license_display))
+        # Test that the get_content_license_display method exists and is callable
+        self.assertTrue(hasattr(test_obj, 'get_content_license_display'))
+        self.assertTrue(callable(test_obj.get_content_license_display))
 
     def test_license_field_on_delete_protect(self):
         """Test that licenses cannot be deleted when referenced by models."""
         from example.models import TestModel
 
         # Create a test instance that references the license
-        TestModel.objects.create(license=self.license)
+        TestModel.objects.create(content_license=self.license)
 
         # Attempting to delete the license should raise an error
         with self.assertRaises(Exception):  # ProtectedError
@@ -311,7 +311,7 @@ class LicenseIntegrationTest(TestCase):
         from example.models import TestModel
 
         # Create a test instance
-        test_obj = TestModel.objects.create(license=self.license)
+        test_obj = TestModel.objects.create(content_license=self.license)
         test_obj_id = test_obj.id
 
         # Delete the model instance
@@ -328,15 +328,15 @@ class LicenseIntegrationTest(TestCase):
         from example.models import TestModel
 
         # Create multiple instances with the same license
-        obj1 = TestModel.objects.create(license=self.license)
-        obj2 = TestModel.objects.create(license=self.license)
+        obj1 = TestModel.objects.create(content_license=self.license)
+        obj2 = TestModel.objects.create(content_license=self.license)
 
         # Both should reference the same license
-        self.assertEqual(obj1.license, obj2.license)
-        self.assertEqual(obj1.license.pk, obj2.license.pk)
+        self.assertEqual(obj1.content_license, obj2.content_license)
+        self.assertEqual(obj1.content_license.pk, obj2.content_license.pk)
 
         # License should have multiple references
-        related_objects = TestModel.objects.filter(license=self.license)
+        related_objects = TestModel.objects.filter(content_license=self.license)
         self.assertEqual(related_objects.count(), 2)
 
 

@@ -315,17 +315,21 @@ class ValidateLicenseFieldNameTest(TestCase):
 
     def test_validate_license_field_name_missing_field(self):
         """Test validation with missing field."""
-        with self.assertRaises(AttributeError) as cm:
+        from licensing.utils import LicenseFieldNotFoundError
+
+        with self.assertRaises(LicenseFieldNotFoundError) as cm:
             validate_license_field_name(self.UtilsTestModel, 'nonexistent')
 
         self.assertIn("has no field 'nonexistent'", str(cm.exception))
 
     def test_validate_license_field_name_non_foreign_key(self):
         """Test validation with non-foreign key field."""
-        with self.assertRaises(ValueError) as cm:
+        from licensing.utils import InvalidLicenseFieldError
+
+        with self.assertRaises(InvalidLicenseFieldError) as cm:
             validate_license_field_name(self.UtilsTestModel, 'name')
 
-        self.assertIn("is not a foreign key field", str(cm.exception))
+        self.assertIn("is not a valid license field", str(cm.exception))
 
     def test_validate_license_field_name_wrong_model(self):
         """Test validation with foreign key to wrong model."""

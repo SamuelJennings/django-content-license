@@ -35,7 +35,7 @@ jobs:
           title: "chore: update dependencies"
           body: |
             This is an automated pull request to update project dependencies.
-            
+
             Please review the changes and ensure all tests pass before merging.
           branch: update-dependencies
           delete-branch: true

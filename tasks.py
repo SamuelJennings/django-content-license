@@ -23,11 +23,29 @@ def check(c):
     print("🚀 Linting code: Running pre-commit")
     c.run("poetry run pre-commit run -a")
 
+    print("🚀 Running manual pre-commit hooks (poetry-lock, poetry-export)")
+    c.run("poetry run pre-commit run --hook-stage manual -a")
+
     print("🚀 Static type checking: Running mypy")
     c.run("poetry run mypy")
 
     print("🚀 Checking for obsolete dependencies: Running deptry")
     c.run("poetry run deptry .")
+
+
+@task
+def fmt(c):
+    """
+    Format code and update dependency files
+    """
+    print("🚀 Running code formatters")
+    c.run("poetry run pre-commit run -a")
+
+    print("🚀 Updating Poetry lock file")
+    c.run("poetry lock --no-update")
+
+    print("🚀 Updating requirements.txt")
+    c.run("poetry export -o requirements.txt --with=dev --without-hashes")
 
 
 @task
