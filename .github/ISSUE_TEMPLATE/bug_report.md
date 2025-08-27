@@ -1,33 +1,29 @@
 ---
 name: Bug report
 about: Create a bug report to help us improve
-title: "Bug Summary"
+title: "Bug: [Brief description]"
 labels: "bug"
-assignees: "fpgmaas"
+assignees: "SamuelJennings"
 ---
 
 **Describe the bug**
-
-<!-- A clear and concise description of what the bug is. -->
+A clear and concise description of what the bug is.
 
 **To Reproduce**
-
 Steps to reproduce the behavior:
-
-1. ...
-2. ...
-3. ...
+1. 
+2. 
+3. 
 
 **Expected behavior**
+A clear description of what you expected to happen.
 
-<!-- A clear and concise description of what you expected to happen. -->
-
-**System [please complete the following information]:**
-
--   OS: e.g. [Ubuntu 18.04]
--   Language Version: [e.g. Python 3.8]
--   Virtual environment: [e.g. Poetry 1.1.13]
+**Environment:**
+- OS: [e.g. Ubuntu 22.04, Windows 11, macOS 13]
+- Python version: [e.g. 3.11.5]
+- Django version: [e.g. 4.2.5]
+- django-content-license version: [e.g. 0.0.1]
+- Database: [e.g. PostgreSQL 15, SQLite, MySQL 8.0]
 
 **Additional context**
-
-<!-- Add any other context about the problem here. -->
+Add any other context about the problem here, including error messages, logs, or screenshots.

@@ -1,4 +1,48 @@
-{% load i18n  %}
-{% comment %} {% blocktrans %} {% endcomment %}
-<a href="{{ object.get_absolute_url }}">{{ object }}</a> by <a href="{{ object.creators.get_absolute_url }}">{{ object.creators }}</a> is licensed under <a href="{{license.URL}}" target="_blank">{{license.name}}</a>
-{% comment %} {% endblocktrans %} {% endcomment %}
+{% load i18n %} {% if object.get_absolute_url and object.creators and
+object.creators.get_absolute_url %} {% blocktrans with
+object_url=object.get_absolute_url object_name=object
+creators_url=object.creators.get_absolute_url creators_name=object.creators
+license_url=license.canonical_url license_name=license.name %}
+<a href="{{ object_url }}">{{ object_name }}</a> by
+<a href="{{ creators_url }}">{{ creators_name }}</a> is licensed under
+<a href="{{ license_url }}" target="_blank" rel="noopener"
+  >{{ license_name }}</a
+>
+{% endblocktrans %} {% elif object.get_absolute_url and object.creators %} {%
+blocktrans with object_url=object.get_absolute_url object_name=object
+creators_name=object.creators license_url=license.canonical_url
+license_name=license.name %}
+<a href="{{ object_url }}">{{ object_name }}</a> by {{ creators_name }} is
+licensed under
+<a href="{{ license_url }}" target="_blank" rel="noopener"
+  >{{ license_name }}</a
+>
+{% endblocktrans %} {% elif object.get_absolute_url %} {% blocktrans with
+object_url=object.get_absolute_url object_name=object
+license_url=license.canonical_url license_name=license.name %}
+<a href="{{ object_url }}">{{ object_name }}</a> is licensed under
+<a href="{{ license_url }}" target="_blank" rel="noopener"
+  >{{ license_name }}</a
+>
+{% endblocktrans %} {% elif object.creators and object.creators.get_absolute_url
+%} {% blocktrans with object_name=object
+creators_url=object.creators.get_absolute_url creators_name=object.creators
+license_url=license.canonical_url license_name=license.name %} {{ object_name }}
+by <a href="{{ creators_url }}">{{ creators_name }}</a> is licensed under
+<a href="{{ license_url }}" target="_blank" rel="noopener"
+  >{{ license_name }}</a
+>
+{% endblocktrans %} {% elif object.creators %} {% blocktrans with
+object_name=object creators_name=object.creators
+license_url=license.canonical_url license_name=license.name %} {{ object_name }}
+by {{ creators_name }} is licensed under
+<a href="{{ license_url }}" target="_blank" rel="noopener"
+  >{{ license_name }}</a
+>
+{% endblocktrans %} {% else %} {% blocktrans with object_name=object
+license_url=license.canonical_url license_name=license.name %} {{ object_name }}
+is licensed under
+<a href="{{ license_url }}" target="_blank" rel="noopener"
+  >{{ license_name }}</a
+>
+{% endblocktrans %} {% endif %}
