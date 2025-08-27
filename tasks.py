@@ -2,53 +2,6 @@ from invoke import task
 
 
 @task
-def install(c):
-    """
-    Install the project dependencies
-    """
-    print("🚀 Creating virtual environment using pyenv and poetry")
-    c.run("poetry install")
-    c.run("poetry run pre-commit install")
-    c.run("poetry shell")
-
-
-@task
-def check(c):
-    """
-    Check the consistency of the project using various tools
-    """
-    print("🚀 Checking Poetry lock file consistency with 'pyproject.toml': Running poetry check --lock")
-    c.run("poetry check --lock")
-
-    print("🚀 Linting code: Running pre-commit")
-    c.run("poetry run pre-commit run -a")
-
-    print("🚀 Running manual pre-commit hooks (poetry-lock, poetry-export)")
-    c.run("poetry run pre-commit run --hook-stage manual -a")
-
-    print("🚀 Static type checking: Running mypy")
-    c.run("poetry run mypy")
-
-    print("🚀 Checking for obsolete dependencies: Running deptry")
-    c.run("poetry run deptry .")
-
-
-@task
-def fmt(c):
-    """
-    Format code and update dependency files
-    """
-    print("🚀 Running code formatters")
-    c.run("poetry run pre-commit run -a")
-
-    print("🚀 Updating Poetry lock file")
-    c.run("poetry lock --no-update")
-
-    print("🚀 Updating requirements.txt")
-    c.run("poetry export -o requirements.txt --with=dev --without-hashes")
-
-
-@task
 def test(c, tox=False):
     """
     Run the test suite
