@@ -156,7 +156,7 @@ def release(c, rule=""):
     version = c.run("poetry version", hide=True).stdout.strip()
 
     # 2. commit the changes to pyproject.toml
-    c.run(f'git commit pyproject.toml -m "bump to v{version_short}"')
+    c.run(f'git commit pyproject.toml -m "Release v{version_short}"')
 
     # 3. create a tag and push it to the remote repository
     c.run(f'git tag -a v{version_short} -m "{version}"')
