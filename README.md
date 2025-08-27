@@ -2,6 +2,7 @@
 
 [![Github Build](https://github.com/Geoluminate/django-content-license/actions/workflows/build.yml/badge.svg)](https://github.com/Geoluminate/django-content-license/actions/workflows/build.yml)
 [![Github Tests](https://github.com/Geoluminate/django-content-license/actions/workflows/tests.yml/badge.svg)](https://github.com/Geoluminate/django-content-license/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/SamuelJennings/django-content-license/branch/main/graph/badge.svg)](https://codecov.io/gh/SamuelJennings/django-content-license)
 ![GitHub](https://img.shields.io/github/license/Geoluminate/django-content-license)
 ![GitHub last commit](https://img.shields.io/github/last-commit/Geoluminate/django-content-license)
 <!-- ![PyPI](https://img.shields.io/pypi/v/django-content-license) -->
