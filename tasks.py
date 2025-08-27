@@ -71,6 +71,64 @@ def docs(c):
 
 
 @task
+def prerelease(c):
+    """
+    Run comprehensive pre-release checks and update all required files.
+
+    This task performs all necessary steps to prepare the repository for release:
+    1. Format code and update dependency files
+    2. Run all quality checks and tests
+    3. Update requirements.txt
+
+    Use this before running the release task to ensure everything is ready.
+    """
+    print("🚀 Starting comprehensive pre-release checks...")
+    print("=" * 60)
+
+    # Step 1: Format code and update Poetry lock file
+    print("📝 Step 1: Formatting code and updating Poetry lock file")
+    print("🚀 Running code formatters")
+    c.run("poetry run pre-commit run -a")
+
+    print("🚀 Updating Poetry lock file")
+    c.run("poetry lock --no-update")
+
+    # Step 2: Check Poetry lock file consistency
+    print("\n🔍 Step 2: Checking Poetry lock file consistency")
+    print("🚀 Checking Poetry lock file consistency with 'pyproject.toml'")
+    c.run("poetry check --lock")
+
+    # Step 3: Run comprehensive linting and type checking
+    print("\n🧹 Step 3: Running comprehensive linting and type checking")
+    print("🚀 Running pre-commit hooks")
+    c.run("poetry run pre-commit run -a")
+
+    print("🚀 Running manual pre-commit hooks (poetry-lock, poetry-export)")
+    c.run("poetry run pre-commit run --hook-stage manual -a")
+
+    print("🚀 Static type checking with mypy")
+    c.run("poetry run mypy")
+
+    print("🚀 Checking for obsolete dependencies with deptry")
+    c.run("poetry run deptry .")
+
+    # Step 4: Run comprehensive test suite
+    print("\n🧪 Step 4: Running comprehensive test suite")
+    print("🚀 Running pytest with coverage")
+    c.run("poetry run pytest --cov --cov-config=pyproject.toml --cov-report=html")
+
+    # Step 5: Update requirements.txt
+    print("\n📦 Step 5: Updating requirements.txt")
+    print("🚀 Exporting Poetry dependencies to requirements.txt")
+    c.run("poetry export -o requirements.txt --with=dev --without-hashes")
+
+    print("\n" + "=" * 60)
+    print("✅ Pre-release checks completed successfully!")
+    print("🎉 Repository is ready for release. You can now run 'invoke release' with the appropriate rule.")
+    print("   Example: invoke release --rule=patch")
+
+
+@task
 def release(c, rule=""):
     """
     Create a new git tag and push it to the remote repository.
