@@ -76,7 +76,7 @@ def prerelease(c):
     Run comprehensive pre-release checks and update all required files.
 
     This task performs all necessary steps to prepare the repository for release:
-    1. Format code and update dependency files
+    1. Run linting and formatting (including poetry-lock hook)
     2. Run all quality checks and tests
     3. Update requirements.txt
 
@@ -85,26 +85,18 @@ def prerelease(c):
     print("🚀 Starting comprehensive pre-release checks...")
     print("=" * 60)
 
-    # Step 1: Format code and update Poetry lock file
-    print("📝 Step 1: Formatting code and updating Poetry lock file")
-    print("🚀 Running code formatters")
-    c.run("poetry run pre-commit run -a")
-
-    print("🚀 Updating Poetry lock file")
-    c.run("poetry lock --no-update")
-
-    # Step 2: Check Poetry lock file consistency
-    print("\n🔍 Step 2: Checking Poetry lock file consistency")
-    print("🚀 Checking Poetry lock file consistency with 'pyproject.toml'")
-    c.run("poetry check --lock")
-
-    # Step 3: Run comprehensive linting and type checking
-    print("\n🧹 Step 3: Running comprehensive linting and type checking")
+    # Step 1: Run comprehensive linting and type checking (including poetry-lock)
+    print("\n🧹 Step 1: Running comprehensive linting and type checking")
     print("🚀 Running pre-commit hooks")
     c.run("poetry run pre-commit run -a")
 
     print("🚀 Running manual pre-commit hooks (poetry-lock, poetry-export)")
     c.run("poetry run pre-commit run --hook-stage manual -a")
+
+    # Step 2: Check Poetry lock file consistency
+    print("\n🔍 Step 2: Checking Poetry lock file consistency")
+    print("🚀 Checking Poetry lock file consistency with 'pyproject.toml'")
+    c.run("poetry check --lock")
 
     print("🚀 Static type checking with mypy")
     c.run("poetry run mypy")
@@ -112,13 +104,13 @@ def prerelease(c):
     print("🚀 Checking for obsolete dependencies with deptry")
     c.run("poetry run deptry .")
 
-    # Step 4: Run comprehensive test suite
-    print("\n🧪 Step 4: Running comprehensive test suite")
+    # Step 3: Run comprehensive test suite
+    print("\n🧪 Step 3: Running comprehensive test suite")
     print("🚀 Running pytest with coverage")
     c.run("poetry run pytest --cov --cov-config=pyproject.toml --cov-report=html")
 
-    # Step 5: Update requirements.txt
-    print("\n📦 Step 5: Updating requirements.txt")
+    # Step 4: Update requirements.txt (final step)
+    print("\n📦 Step 4: Updating requirements.txt")
     print("🚀 Exporting Poetry dependencies to requirements.txt")
     c.run("poetry export -o requirements.txt --with=dev --without-hashes")
 

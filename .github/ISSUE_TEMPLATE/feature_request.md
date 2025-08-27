@@ -3,7 +3,7 @@ name: Feature request
 about: Suggest a new feature for django-content-license
 title: "Feature: [Brief description]"
 labels: "enhancement"
-assignees: "SSJenny90"
+assignees: "SamuelJennings"
 ---
 
 **Is your feature request related to a problem?**

@@ -379,7 +379,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ```bash
 # Clone the repository
-git clone https://github.com/SSJenny90/django-content-license.git
+git clone https://github.com/SamuelJennings/django-content-license.git
 cd django-content-license
 
 # Install dependencies
@@ -408,8 +408,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 - **Documentation**: Full documentation available at [Read the Docs](https://django-content-license.readthedocs.io)
-- **Issues**: Report bugs at [GitHub Issues](https://github.com/SSJenny90/django-content-license/issues)
-- **Discussion**: Join the discussion at [GitHub Discussions](https://github.com/SSJenny90/django-content-license/discussions)
+- **Issues**: Report bugs at [GitHub Issues](https://github.com/SamuelJennings/django-content-license/issues)
+- **Discussion**: Join the discussion at [GitHub Discussions](https://github.com/SamuelJennings/django-content-license/discussions)
 
 ## Changelog
 

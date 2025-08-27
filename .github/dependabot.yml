@@ -9,7 +9,7 @@ updates:
       time: "09:00"
     open-pull-requests-limit: 10
     reviewers:
-      - "SSJenny90"
+      - "SamuelJennings"
     labels:
       - "dependencies"
       - "python"
@@ -26,7 +26,7 @@ updates:
       time: "09:00"
     open-pull-requests-limit: 5
     reviewers:
-      - "SSJenny90"
+      - "SamuelJennings"
     labels:
       - "dependencies"
       - "github-actions"
