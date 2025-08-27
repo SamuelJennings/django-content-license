@@ -1,10 +1,10 @@
 # Django Content License
 
-[![Github Build](https://github.com/Geoluminate/django-content-license/actions/workflows/build.yml/badge.svg)](https://github.com/Geoluminate/django-content-license/actions/workflows/build.yml)
-[![Github Tests](https://github.com/Geoluminate/django-content-license/actions/workflows/tests.yml/badge.svg)](https://github.com/Geoluminate/django-content-license/actions/workflows/tests.yml)
+[![Github Build](https://github.com/SamuelJennings/django-content-license/actions/workflows/build.yml/badge.svg)](https://github.com/SamuelJennings/django-content-license/actions/workflows/build.yml)
+[![Github Tests](https://github.com/SamuelJennings/django-content-license/actions/workflows/tests.yml/badge.svg)](https://github.com/SamuelJennings/django-content-license/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/SamuelJennings/django-content-license/branch/main/graph/badge.svg)](https://codecov.io/gh/SamuelJennings/django-content-license)
-![GitHub](https://img.shields.io/github/license/Geoluminate/django-content-license)
-![GitHub last commit](https://img.shields.io/github/last-commit/Geoluminate/django-content-license)
+![GitHub](https://img.shields.io/github/license/SamuelJennings/django-content-license)
+![GitHub last commit](https://img.shields.io/github/last-commit/SamuelJennings/django-content-license)
 <!-- ![PyPI](https://img.shields.io/pypi/v/django-content-license) -->
 
 A Django app that allows you to associate content licenses with model instances and display appropriate attribution in your HTML templates. Perfect for academic datasets, research publications, creative content, and any application where proper licensing and attribution are important.
