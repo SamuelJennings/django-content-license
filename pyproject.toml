@@ -23,6 +23,8 @@ python = ">=3.10,<4.0"
 django = ">=3.2"
 
 [tool.poetry.group.dev.dependencies]
+pre-commit = "^4.5.1"
+coverage = "^7.13.3"
 
 
 [build-system]
