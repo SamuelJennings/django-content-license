@@ -23,8 +23,6 @@ python = ">=3.10,<4.0"
 django = ">=3.2"
 
 [tool.poetry.group.dev.dependencies]
-fairdm-dev-tools = {git = "https://github.com/FAIR-DM/dev-tools"}
-
 
 
 [build-system]
