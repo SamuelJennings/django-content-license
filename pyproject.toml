@@ -117,7 +117,6 @@ addopts = [
     "--strict-config",
     "--verbose",
     "--tb=short",
-    "--reuse-db",
 ]
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
