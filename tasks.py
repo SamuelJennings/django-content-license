@@ -52,7 +52,7 @@ def prerelease(c):
     c.run("poetry check --lock")
 
     print("🚀 Static type checking with mypy")
-    c.run("poetry run mypy")
+    c.run("poetry run mypy", env={"PYTHONPATH": ""})
 
     print("🚀 Checking for obsolete dependencies with deptry")
     c.run("poetry run deptry .")
@@ -61,16 +61,6 @@ def prerelease(c):
     print("\n🧪 Step 3: Running comprehensive test suite")
     print("🚀 Running pytest with coverage")
     c.run("poetry run pytest --cov --cov-config=pyproject.toml --cov-report=html")
-
-    # Step 4: Update requirements.txt (final step)
-    print("\n📦 Step 4: Updating requirements.txt")
-    print("🚀 Exporting Poetry dependencies to requirements.txt")
-    c.run("poetry export -o requirements.txt --with=dev --without-hashes")
-
-    print("\n" + "=" * 60)
-    print("✅ Pre-release checks completed successfully!")
-    print("🎉 Repository is ready for release. You can now run 'invoke release' with the appropriate rule.")
-    print("   Example: invoke release --rule=patch")
 
 
 @task
