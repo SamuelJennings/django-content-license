@@ -10,11 +10,12 @@ licensing and attribution matter. See `CONTEXT.md` for the ubiquitous language.
 
 ## Stack & commands
 
-- **Stack:** Python ≥3.10 / Django ≥3.2 (tested to 5.0), Poetry-managed. Ships to PyPI.
+- **Stack:** Python ≥3.11 / Django 5.2 LTS + 6.0 (family standard — supported releases only),
+  Poetry-managed. Dev toolchain via the `fairdm-dev-tools` bundle. Ships to PyPI.
 - **Install:** `poetry install`
-- **Test:** `poetry run pytest` (or `python manage.py test`; settings module `tests.settings`)
-- **Lint:** `poetry run pre-commit run --all-files` (ruff + black + pyupgrade)
-- **Type-check:** `poetry run mypy licensing/`  *(currently non-blocking in CI)*
+- **Test:** `poetry run pytest` (pytest-django; settings module `tests.settings`)
+- **Lint/format:** `poetry run pre-commit run --all-files` (ruff + black + pyupgrade; local mypy + deptry hooks)
+- **Type-check:** `poetry run mypy licensing/`
 - **Build:** `poetry build`
 - **All checks (as CI runs):** `poetry run invoke check`
 
@@ -36,11 +37,10 @@ See `docs/agents/domain.md`.
 
 ### CI checks
 
-Required status checks the pipeline reads (exact names):
-`Code Quality`, `Security Scan`, `Build Package`, and the test matrix
-`Test Python 3.12, Django 4.2` (representative required combo; full matrix is 10 combos of
-Python 3.10–3.12 × Django 3.2/4.1/4.2/5.0). CI is repo-native; see the org's CI audit record
-in the registry.
+CI delegates to the `django-mvp/shared` reusable workflows (`tests.yml`, `build.yml`).
+Required status checks (exact names): `Code Quality`, `Security Scan`, `Build Package`, plus
+the test matrix `Test Python <py>, Django <dj>` (Python 3.12–3.13 × Django 5.2/6.0). See the
+org's CI audit record in the registry.
 
 ## Engineering org
 

@@ -1,5 +1,10 @@
 # Family Alignment Plan — django-content-license → django-mvp standard
 
+> **Status: EXECUTED in PR #2 (chore/family-alignment).** Deltas 1–3 landed (shared CI,
+> `fairdm-dev-tools`, modern pre-commit, matrix → Django 5.2/6.0). Delta 4 (README ↔ code
+> reconciliation) remains open — tracked separately. Post-merge: add the test-matrix checks
+> to the ruleset.
+
 Recorded 2026-07-15 during forge-onboard, after studying the gold standard
 (`django-mvp` + the already-onboarded `django-easy-icons`, the closest same-shape sibling).
 Onboarding scaffolding (agent config, CONTEXT, ADRs, constitution) is done. This file is the

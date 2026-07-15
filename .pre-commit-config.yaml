@@ -1,42 +1,59 @@
 exclude: "^docs/|/migrations/|^tests/"
-default_stages: [commit]
+default_stages: [pre-commit]
 
 repos:
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.9.0
+    rev: v3.21.2
     hooks:
       - id: pyupgrade
-        args: [--py310-plus]
+        args: [--py311-plus]
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: "v0.0.260"
+    rev: v0.14.7
     hooks:
       - id: ruff
 
   - repo: https://github.com/psf/black
-    rev: 23.7.0
+    rev: 25.11.0
     hooks:
       - id: black
 
   - repo: https://github.com/python-poetry/poetry
-    rev: "1.5.1"
+    rev: '2.3.4'
     hooks:
       - id: poetry-check
       - id: poetry-lock
-        stages: [manual] # Only run manually, not in CI
-      - id: poetry-export
-        args: ["-o", "requirements.txt", "--with=dev", "--without-hashes"]
-        stages: [manual] # Only run manually, not in CI
+        stages: [manual]  # Only run manually, not in CI
+
+  # Local hooks that use the Poetry environment
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy
+        entry: poetry run mypy
+        language: system
+        types: [python]
+        files: ^licensing/
+      - id: deptry
+        name: deptry
+        language: python
+        entry: deptry
+        additional_dependencies: ["deptry==0.24.0"]
+        args: ["--verbose", "."]
+        pass_filenames: false
+        always_run: true
+
 
 # sets up .pre-commit-ci.yaml to ensure pre-commit dependencies stay up to date
 ci:
-  autoupdate_schedule: weekly
-  skip: [poetry-lock, poetry-export] # Skip file-modifying hooks in CI
+  autoupdate_schedule: monthly
+  skip: [poetry-lock, mypy, deptry]  # Skip file-modifying and local-env hooks in CI
   submodules: false

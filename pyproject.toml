@@ -10,21 +10,26 @@ homepage = "https://github.com/SamuelJennings/django-content-license"
 keywords = ["django", "research", "science", "datasets", "research management", "open source", "open science", "FAIR"]
 classifiers = [
     "Development Status :: 3 - Alpha",
-    "Framework :: Django :: 3.2",
-    "Framework :: Django :: 4.0",
+    "Framework :: Django :: 5.2",
+    "Framework :: Django :: 6.0",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: BSD License",
+    "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-django = ">=3.2"
+python = ">=3.11,<4.0"
+# Only actively supported Django releases (family standard). 5.2 LTS + current
+# stable; dropping a version is a constitution-level change (memory/constitution.md).
+django = ">=5.2"
 
 [tool.poetry.group.dev.dependencies]
-pre-commit = "^4.5.1"
-coverage = "^7.13.3"
+# Family dev-tooling bundle: pytest, pytest-django, ruff, black, mypy,
+# django-stubs, deptry, pre-commit, coverage (mirrors django-easy-icons).
+fairdm-dev-tools = { git = "https://github.com/FAIR-DM/dev-tools", extras = ["dev", "test"] }
 
 
 [build-system]
@@ -34,7 +39,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 line-length = 120
-target-version = ['py38']
+target-version = ['py311']
 preview = true
 
 [tool.isort]
@@ -59,10 +64,12 @@ django_settings_module = "tests.settings"
 ignore_missing_model_attributes = "True"
 
 [tool.ruff]
-target-version = "py37"
+target-version = "py311"
 line-length = 120
 fix = true
 exclude = ['docs/']
+
+[tool.ruff.lint]
 select = [
     # flake8-2020
     "YTT",
@@ -100,9 +107,24 @@ ignore = [
     "E501",
     # DoNotAssignLambda
     "E731",
+    # Mutable class attributes (noise on Django Meta: ordering/indexes)
+    "RUF012",
+    # Avoid long messages outside the exception class
+    "TRY003",
+    # Use of mark_safe (attribution HTML is escaped via the template layer)
+    "S308",
+    # Standard pseudo-random generators
+    "S311",
+    # Class attribute shadowing a builtin (Django field names)
+    "A003",
+    # Star imports
+    "F403",
+    "F405",
+    # Function too complex
+    "C901",
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101","S105"]
 # "**/models.py" = ["A003",]
 # "docs/conf.py" = ["*"]
@@ -117,6 +139,9 @@ addopts = [
     "--strict-config",
     "--verbose",
     "--tb=short",
+    "--cov=licensing",
+    "--cov-report=html",
+    "-ra",
 ]
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
@@ -142,29 +167,10 @@ source = ["licensing"]
 [tool.deptry]
 extend_exclude = [
     "tasks.py",
-    "docs/"
+    "tests/",
+    "example/",
+    "docs/",
 ]
 
-
-[tool.tox]
-legacy_tox_ini = """
-[tox]
-skipsdist = true
-envlist = py38, py39, py310, py311
-
-[gh-actions]
-python =
-    3.8: py38
-    3.9: py39
-    3.10: py310
-    3.11: py311
-
-[testenv]
-passenv = PYTHON_VERSION
-setenv =
-    DJANGO_SETTINGS_MODULE=tests.settings
-allowlist_externals = poetry
-commands =
-    pip install -r requirements.txt
-    pytest --cov --cov-config=pyproject.toml --cov-report=xml
-"""
+[tool.deptry.per_rule_ignores]
+DEP003 = ["licensing"]

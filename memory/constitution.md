@@ -39,10 +39,10 @@ may break with notice).
 
 ### Article VI — Compatibility matrix
 Supported Python/Django versions are whatever the CI matrix declares — the matrix is
-authoritative. Policy: track actively-supported Django releases (family rule). New code must
-pass the full matrix; dropping a version is a constitution-level change recorded in CHANGELOG.
-<!-- [CONFIRM] concrete matrix: family standard is Django 5.2 LTS + 6.0, Python 3.11–3.13.
-     Pending Sam's ruling on narrowing from the current 3.2/4.1/4.2/5.0. -->
+authoritative. Policy: track only actively-supported Django releases (family rule). Current
+matrix: **Django 5.2 LTS + 6.0**, Python **3.11–3.13** (package floor `>=3.11`; CI test
+matrix Python 3.12–3.13 per the shared workflow default). New code must pass the full matrix;
+dropping a version is a constitution-level change recorded in CHANGELOG.
 
 ### Article VII — Attribution & data-safety contract
 Rendered attribution MUST escape all interpolated values (host title, creators, license
