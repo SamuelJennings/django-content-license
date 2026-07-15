@@ -50,20 +50,17 @@ poetry run invoke test --tox
 The CI skips certain hooks that modify files. Run these manually when needed:
 
 ```bash
-# Update poetry.lock and requirements.txt
+# Update poetry.lock
 poetry run pre-commit run --hook-stage manual --all-files
-
-# Or use the convenience command
-poetry run invoke fmt
 ```
 
 ## Pre-commit Hooks
 
 We use pre-commit hooks to maintain code quality:
 
-- **Automatic on commit**: Basic formatting and linting
-- **Manual (run with `invoke fmt`)**: Poetry lock file and requirements.txt updates
-- **CI checks**: All hooks except file-modifying ones
+- **Automatic on commit**: Basic formatting and linting (ruff, black, pyupgrade), plus local mypy + deptry
+- **Manual**: Poetry lock file updates (`poetry-lock`)
+- **CI checks**: All hooks except file-modifying and local-env ones
 
 ## Troubleshooting
 
@@ -71,8 +68,8 @@ We use pre-commit hooks to maintain code quality:
 
 This happens when your `poetry.lock` file is out of sync. Run locally:
 ```bash
-poetry run invoke fmt
-git add poetry.lock requirements.txt
+poetry run pre-commit run --hook-stage manual --all-files
+git add poetry.lock
 git commit -m "Update dependency files"
 ```
 

@@ -2,18 +2,12 @@
 Shared pytest fixtures for django-content-license tests.
 """
 import pytest
-from django.conf import settings
 
-# pytest_plugins = ['django_pytest_plugin']
-
-
-@pytest.fixture(scope='session')
-def django_db_setup():
-    """Set up test database."""
-    settings.DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:',
-    }
+# NOTE: do not override `django_db_setup` here. pytest-django's built-in fixture
+# creates the test database AND runs migrations; overriding it to only swap the
+# DATABASES dict (as a previous version did) leaves the schema uncreated and
+# every DB test fails with "no such table". The DB is configured in
+# tests/settings.py; let pytest-django own setup.
 
 
 @pytest.fixture

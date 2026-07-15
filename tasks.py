@@ -2,16 +2,12 @@ from invoke import task
 
 
 @task
-def test(c, tox=False):
+def test(c):
     """
     Run the test suite
     """
-    if tox:
-        print("🚀 Testing code: Running pytest with all tests")
-        c.run("tox")
-    else:
-        print("🚀 Testing code: Running pytest")
-        c.run("poetry run pytest --cov --cov-config=pyproject.toml --cov-report=html")
+    print("🚀 Testing code: Running pytest")
+    c.run("poetry run pytest --cov --cov-config=pyproject.toml --cov-report=html")
 
 
 @task
@@ -48,7 +44,7 @@ def prerelease(c):
     print("🚀 Running pre-commit hooks (includes mypy and deptry)")
     c.run("poetry run pre-commit run -a")
 
-    print("🚀 Running manual pre-commit hooks (poetry-lock, poetry-export)")
+    print("🚀 Running manual pre-commit hooks (poetry-lock)")
     c.run("poetry run pre-commit run --hook-stage manual -a")
 
     # Step 2: Check Poetry lock file consistency

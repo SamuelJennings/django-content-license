@@ -1,6 +1,7 @@
 """
 Utility functions for django-content-license package.
 """
+
 import logging
 
 from django.template.loader import render_to_string
@@ -111,7 +112,7 @@ def html_snippet(model_instance, field_name):
             return ""
 
         snippet = render_to_string("licensing/snippet.html", {"object": model_instance, "license": license_obj})
-        return mark_safe(snippet)  # noqa: S308
+        return mark_safe(snippet)
     except Exception as e:
         logger.warning(f"Error generating license snippet: {e}")
         return ""
