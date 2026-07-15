@@ -64,9 +64,10 @@ only thing most templates call.
 ### Creators
 
 The author(s) of a licensed instance, read off the host model's `creators` attribute
-(string or related object). Optional; absent creators render as "Unknown". Note the plural —
-`creators` (attribution) is distinct from the singular `creator` read by
-`get_license_creator()`. [CONFIRM] whether both are intended or the singular is legacy.
+(string or related object). Optional; absent creators render as "Unknown". **`creators`
+(plural) is the canonical attribution contract** — it is what `get_license_attribution()` and
+`licensing/snippet.html` read. The singular `creator` read by `get_license_creator()` is a
+legacy orphan with no production caller and is slated for removal; do not build on it.
 
 ### Slug
 
@@ -88,12 +89,14 @@ content cannot be deleted — retirement happens through the **License Lifecycle
   flat record. Don't introduce categorisation vocabulary that the model doesn't have.
 - **"delete a license"** — the domain retires licenses via **deprecation**; avoid "delete".
 
-## Open questions (for Sam — resolve before first feature spec)
+## Resolved decisions (settled 2026-07-15)
 
-1. **README ↔ code drift.** The README documents features absent from the source: template
-   tags, a package-level admin (`licensing/admin.py` does not exist), `License.get_compatibility_with()`,
-   several test files, and a ReadTheDocs site. Are these a **roadmap** (keep as goals) or
-   **stale docs** (prune)? This decides whether the terms enter the glossary.
-2. **`creator` vs `creators`** — one intended, or is one legacy? (see **Creators**).
-3. Is the stored-catalogue model (full text in DB) the intended long-term design, or a
-   placeholder for pulling from an external license registry (SPDX/Creative Commons)?
+1. **README ↔ code drift** — RESOLVED (stale docs, pruned in PR #27). The phantom features
+   (template tags, package admin, `get_compatibility_with()`, ghost test files, ReadTheDocs)
+   were removed from the README rather than kept as roadmap.
+2. **`creator` vs `creators`** — RESOLVED: `creators` (plural) is canonical; the singular
+   `creator` / `get_license_creator()` is a legacy orphan to be removed (see **Creators**).
+3. **Stored-catalogue vs external registry** — RESOLVED: the per-deployment stored catalogue
+   is the intended design (ADR-0001, Accepted). `creativecommons.json.gz` is optional seed
+   data, not a sync. Pulling from an external registry (SPDX / Creative Commons API) would be
+   a future feature superseding ADR-0001, not the current direction.

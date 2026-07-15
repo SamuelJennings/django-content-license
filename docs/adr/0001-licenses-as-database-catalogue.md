@@ -1,6 +1,6 @@
 # ADR-0001 — Licenses are a per-deployment database catalogue
 
-- **Status:** Accepted (retroactive — recorded at onboarding 2026-07-15; confirm)
+- **Status:** Accepted (confirmed by Sam 2026-07-15)
 - **Context date:** observed in `licensing/models.py`, `licensing/fixtures/creativecommons.json.gz`
 
 ## Context
@@ -24,7 +24,9 @@ deployments are free to add, edit, and deprecate their own.
   fidelity becomes a requirement, that is a new feature, not a change here.
 - Seed data ships as a Django fixture; loading it is the deployment's choice.
 
-## Open question
+## Resolution
 
-Is (c) the intended long-term design, or a stepping stone toward (b)? See CONTEXT.md open
-question 3.
+Confirmed as the intended long-term design (option c), not a stepping stone toward an external
+registry (Sam, 2026-07-15). The bundled `creativecommons.json.gz` is optional seed data loaded
+at the deployment's choice — there is no sync. Integrating an external registry (SPDX / the
+Creative Commons API) would be a future feature that supersedes this ADR, not a revision of it.
