@@ -13,9 +13,8 @@ A Django app that allows you to associate content licenses with model instances 
 
 - **License Management**: Store and manage various content licenses (MIT, GPL, Creative Commons, etc.)
 - **Easy Integration**: Simple `LicenseField` that can be added to any Django model
-- **Automatic Attribution**: Generate proper HTML attribution snippets automatically
-- **Template Integration**: Built-in template tags for displaying license information
-- **Admin Interface**: Full Django admin integration for license management
+- **Automatic Attribution**: Render proper HTML attribution snippets via the field's auto-injected `get_<field>_display()` method
+- **Template Override**: Customize the attribution markup by shadowing the `licensing/snippet.html` template
 - **Validation**: Built-in validation for license consistency and requirements
 - **Internationalization**: Full i18n support with translations
 - **Performance**: Optimized database queries and indexing
@@ -153,9 +152,6 @@ print(license.full_name)  # Full license name
 
 # Validation
 license.clean()  # Validates license consistency
-
-# Future compatibility checking (placeholder)
-compatibility = license.get_compatibility_with(other_license)
 ```
 
 ### Template Customization
@@ -207,33 +203,23 @@ license.clean()  # Raises ValidationError
 
 ## Testing
 
-The package includes comprehensive test coverage using both Django's TestCase and pytest.
+The suite is written as Django `TestCase` classes and run with pytest (pytest-django).
 
 ### Running Tests
 
 ```bash
-# Run all tests with Django's test runner
-python manage.py test
-
-# Run with pytest (recommended)
-pytest
+# Run with pytest (settings module: tests.settings)
+poetry run pytest
 
 # Run with coverage
-pytest --cov=licensing --cov-report=html
-
-# Run specific test categories
-pytest -m unit  # Unit tests only
-pytest -m integration  # Integration tests only
-pytest -m "not slow"  # Skip slow tests
+poetry run pytest --cov=licensing --cov-report=html
 ```
 
 ### Test Organization
 
-- `tests/test_models.py` - Model functionality (Django TestCase)
-- `tests/test_fields.py` - Field functionality (Django TestCase)
-- `tests/test_pytest_models.py` - Model tests (pytest)
-- `tests/test_pytest_fields.py` - Field tests (pytest)
-- `tests/test_integration.py` - Integration tests (pytest)
+- `tests/test_models.py` - `License` model functionality
+- `tests/test_fields.py` - `LicenseField` and attribution rendering
+- `tests/test_utils.py` - attribution/utility helpers
 
 ### Writing Your Own Tests
 
@@ -257,18 +243,9 @@ def test_my_model_with_license():
 
 ## Admin Integration
 
-The package provides a complete Django admin interface:
-
-### License Admin Features
-- List view with license name, status, and description
-- Filtering by active status and creation date
-- Search by name and description
-- Bulk actions for activating/deactivating licenses
-- Form validation with helpful error messages
-
-### Custom Admin
-
-You can customize the admin interface:
+The package does **not** register a `ModelAdmin` for you — register `License` in your own
+project's `admin.py` so you control the site it appears on and how it's displayed. The model
+exposes helpers (`status_display`, `short_description`) that are handy in `list_display`:
 
 ```python
 # admin.py
@@ -276,7 +253,7 @@ from django.contrib import admin
 from licensing.models import License
 
 @admin.register(License)
-class CustomLicenseAdmin(admin.ModelAdmin):
+class LicenseAdmin(admin.ModelAdmin):
     list_display = ['name', 'status_display', 'canonical_url']
     list_filter = ['is_active', 'created_at']
     search_fields = ['name', 'description']
@@ -407,9 +384,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-- **Documentation**: Full documentation available at [Read the Docs](https://django-content-license.readthedocs.io)
+- **Documentation**: this README (usage) and `docs/adr/` (design decisions)
 - **Issues**: Report bugs at [GitHub Issues](https://github.com/SamuelJennings/django-content-license/issues)
-- **Discussion**: Join the discussion at [GitHub Discussions](https://github.com/SamuelJennings/django-content-license/discussions)
 
 ## Changelog
 
@@ -417,8 +393,7 @@ See [HISTORY.md](HISTORY.md) for a complete changelog.
 
 ## Related Projects
 
-- [django-licenses](https://github.com/example/django-licenses) - Alternative license management
-- [Creative Commons API](https://github.com/creativecommons/cc-licenses) - Official CC license data
+- [Creative Commons – cc-licenses](https://github.com/creativecommons/cc-licenses) - Official CC license data
 
 ---
 
