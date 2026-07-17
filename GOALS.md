@@ -2,73 +2,75 @@
 
 ## Purpose
 
-`django-content-license` is a generic Django app for associating a **License** with any
-model through a single `LicenseField`, and — where a license requires it — rendering an
-optional HTML **attribution** snippet on the page. It is the GitHub-style primitive: a
-picked-from catalogue of licenses, plus attribution, made reusable for any Django project.
-It exists because publishing content correctly needs licensing, and there was no good
-generic Django app for it — so instead of baking it into a larger framework, it lives
-standalone.
+`django-content-license` lets any Django model carry a content license, and where a license
+needs it, renders a small HTML attribution snippet for the page. Think of the license picker
+GitHub puts on a new repository, plus the attribution part that some licenses (like Creative
+Commons) ask you to show. It exists because a lot of projects need this and there was no good
+generic app for it, so instead of building it into a larger framework it lives on its own.
 
 ## Problem & users
 
-**Problem.** Django projects that publish content — datasets, publications, creative work —
-need to state a license and, for some licenses, show correct attribution. There is no clean,
-generic app for this, so each project either hand-rolls it or bakes it into a larger
-framework.
+Projects that publish content need to say what license it's under, and some licenses want a
+visible attribution line to go with it. Today you either write that yourself or inherit it
+from whatever framework you're on. This app is the small piece that just does it.
 
-**Users.** Any Django developer or site maintainer who wants a repository-style license
-picker plus optional attribution, with a one-field integration and no bespoke licensing code.
+It's for any Django developer or site maintainer who wants a license picker and optional
+attribution by adding one field to a model, without writing licensing code of their own.
 
 ## Success signals
 
-- **The projects it was built for adopt it and delete their hand-rolled licensing code** —
-  the package earns its existence by replacing the thing it would otherwise be baked into.
-- **One-field integration works end-to-end** — a developer adds licensing + attribution to a
-  model with a single `LicenseField` and one template call, against a fresh project, with no
-  custom code.
+The projects it was built for switch to it and delete the licensing code they were carrying.
+That's the honest test of whether it was worth pulling out.
 
-External pickup (PyPI installs, stars, third-party issues) is a welcome lagging indicator,
-not a target — it follows from doing the two above well.
+Adding it to a model takes one `LicenseField` and one template call, on a fresh project, with
+nothing hand-written. If that stops being true, the app has drifted from the point.
+
+PyPI installs, stars, and issues from people I don't know are nice to see, but I'm not
+building for them and won't chase them.
 
 ## Non-goals
 
-- **Citation / metadata export** (BibTeX, DataCite, CSL) — attribution here is an optional
-  HTML snippet for display, not a research-citation engine.
-- **License compatibility reasoning** ("can I combine CC-BY with GPL?") — a legal-reasoning
-  engine, a different product.
-- **Domain-specific requirements of any single consumer** — the app stays the generic
-  primitive; a project with special needs integrates them on its own side, not here.
-- **A fixed, CC-only attribution format** — attribution is per-license and configurable; CC
-  is only what motivated the feature (see Standing tensions).
+It doesn't export citations or metadata (BibTeX, DataCite, CSL). Attribution here is a bit of
+HTML to display, not a research-citation system.
 
-## Desired directions (not commitments)
+It doesn't reason about license compatibility (whether you can combine CC-BY with GPL, say).
+That's a legal engine and a different project.
 
-Wanted, not scheduled — recorded so future feature work has a target:
+It doesn't grow to fit one particular consumer. If a project has a special need, it wires that
+in on its own side and this app stays generic.
 
-- **Bundled admin** — an intuitive way for site maintainers to manage the catalogue and mark
-  licenses current vs. deprecated. (Supersedes today's deliberate "ships no `ModelAdmin`"
-  stance; a step forward, not a contradiction.)
-- **Fresher catalogue** — eventually sync from an external registry (e.g. SPDX / Creative
-  Commons) so the bundled seed set doesn't go stale when upstream text is reworded, without
-  manual upkeep. Would supersede ADR-0001, which remains the *current* design.
+And attribution isn't locked to the Creative Commons style. CC is what prompted the feature,
+but each license defines whatever attribution it requires.
+
+## Desired directions
+
+Things I want, not things that are scheduled. They're written down so future work has a target
+to aim at.
+
+A bundled admin, so a site maintainer can manage the catalogue and mark which licenses are
+current and which are deprecated. Today the app ships no `ModelAdmin` on purpose; this would
+move that forward.
+
+A way to keep the catalogue fresh by syncing from an external registry like SPDX or Creative
+Commons, so the bundled seed set doesn't go stale when upstream text changes and I don't have
+to hand-update it. That would replace the current design recorded in ADR-0001.
 
 ## Appetite
 
-**Steady side-work** — actively maintained and improved as real needs pull it forward; never
-a flagship with its own roadmap sprints.
+Steady side-work. I'll maintain it and improve it as real needs come up, but it isn't a
+flagship and won't get its own roadmap sprints.
 
 ## Standing tensions
 
-- **Generic vs. any single consumer's needs → generic wins.** Real-world requirements are
-  kept in mind, but when they collide with staying generic, the app stays the reusable
-  primitive and the consuming project integrates its own needs on top.
-- **Simplicity vs. flexibility → simplicity wins.** The whole value is the one-field, one-call
-  integration surface. A feature that buys flexibility by eroding that simplicity is the wrong
-  trade for this app.
-- **Attribution: fixed vs. configurable → configurable.** Any license may define the
-  attribution style it requires; licenses that need nothing beyond their title simply don't
-  use the attribution feature. CC style is a default, not a constraint.
+When staying generic pulls against one consumer's specific need, generic wins. I keep those
+needs in mind, but the consuming project integrates them on its side, not in here.
+
+When more flexibility would cost the one-field, one-call simplicity, simplicity wins. That
+simple integration is most of the value.
+
+Attribution stays configurable rather than fixed. A license defines the attribution it needs,
+and a license that only wants its title shown just doesn't use the feature. The CC style is a
+default, not a rule.
 
 ---
 
