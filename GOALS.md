@@ -74,4 +74,4 @@ default, not a rule.
 
 ---
 
-_Produced via `/forge-goals` on 2026-07-16; revise by re-running it._
+_Written 2026-07-16. Revise as the project's direction changes._
