@@ -40,6 +40,9 @@ repos:
         name: mypy
         entry: poetry run mypy
         language: system
+        # --no-incremental avoids a compiled-mypy INTERNAL ERROR that fires during
+        # incremental-cache teardown *after* a successful check, flaking the CI gate.
+        args: [--no-incremental]
         types: [python]
         files: ^licensing/
       - id: deptry
