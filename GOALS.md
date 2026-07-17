@@ -1,77 +1,41 @@
 # GOALS — django-content-license
 
-## Purpose
+Standing directions this project steers toward, grouped by how essential they are. Directions
+are headings, not tasks: you steer toward them, you don't finish them. Each has a stable id
+(identity, never a rank) and, when it needs one, a status. The roadmap turns these into
+shippable work that cites the id, and feature specs cite a roadmap item that cites the id, so
+everything built traces back to a direction here. Progress lives in the roadmap; this file is
+the standing definition of what the package is and wants to become. Scope, non-goals, and
+design principles live in the README.
 
-`django-content-license` lets any Django model carry a content license, and where a license
-needs it, renders a small HTML attribution snippet for the page. Think of the license picker
-GitHub puts on a new repository, plus the attribution part that some licenses (like Creative
-Commons) ask you to show. It exists because a lot of projects need this and there was no good
-generic app for it, so instead of building it into a larger framework it lives on its own.
+### Tiers (maturity, mapped to versions)
+- **MVP** — the floor of a usable product. When the MVP directions are met, the package cuts **v1.0**.
+- **Mature** — enhancements that make it complete and dependable, delivered across the **v1.x** line.
+- **Nice-to-have** — real wants and stray ideas; never makes the package incomplete. An accepted one becomes a **v2.0+** theme.
 
-## Problem & users
+A direction keeps its id if it changes tier.
 
-Projects that publish content need to say what license it's under, and some licenses want a
-visible attribution line to go with it. Today you either write that yourself or inherit it
-from whatever framework you're on. This app is the small piece that just does it.
+### Statuses
+Unmarked means accepted and live. Otherwise:
+- **draft** — captured, not yet refined or accepted.
+- **rejected** — decided against; kept with a reason, and a linked ADR when the call is a design stance.
 
-It's for any Django developer or site maintainer who wants a license picker and optional
-attribution by adding one field to a model, without writing licensing code of their own.
+## MVP → v1.0
+- **D1 — Easy distribution.** Installable from a package index, with versioned releases.
+- **D2 — One-field integration.** Licensing and attribution from a single model field and one
+  template call, no bespoke code.
 
-## Success signals
+## Mature → v1.x
+- **D3 — Flexible attribution.** Each license expresses the attribution it requires, rather
+  than one fixed style.
+- **D4 — Human-manageable catalogue.** A site maintainer can add, edit, and deprecate licenses
+  without touching code.
+- **D5 — Real internal adoption.** The projects this was extracted from rely on it instead of
+  their own licensing code.
 
-The projects it was built for switch to it and delete the licensing code they were carrying.
-That's the honest test of whether it was worth pulling out.
+## Nice-to-have → v2.0+
+- **D6 — A catalogue that doesn't rot.** `draft`. License text refreshable from an upstream
+  registry (SPDX / Creative Commons) without hand-maintenance. _(2026-07-16 — the bundled set
+  goes stale when upstream rewords; would supersede ADR-0001.)_
 
-Adding it to a model takes one `LicenseField` and one template call, on a fresh project, with
-nothing hand-written. If that stops being true, the app has drifted from the point.
-
-PyPI installs, stars, and issues from people I don't know are nice to see, but I'm not
-building for them and won't chase them.
-
-## Non-goals
-
-It doesn't export citations or metadata (BibTeX, DataCite, CSL). Attribution here is a bit of
-HTML to display, not a research-citation system.
-
-It doesn't reason about license compatibility (whether you can combine CC-BY with GPL, say).
-That's a legal engine and a different project.
-
-It doesn't grow to fit one particular consumer. If a project has a special need, it wires that
-in on its own side and this app stays generic.
-
-And attribution isn't locked to the Creative Commons style. CC is what prompted the feature,
-but each license defines whatever attribution it requires.
-
-## Desired directions
-
-Things I want, not things that are scheduled. They're written down so future work has a target
-to aim at.
-
-A bundled admin, so a site maintainer can manage the catalogue and mark which licenses are
-current and which are deprecated. Today the app ships no `ModelAdmin` on purpose; this would
-move that forward.
-
-A way to keep the catalogue fresh by syncing from an external registry like SPDX or Creative
-Commons, so the bundled seed set doesn't go stale when upstream text changes and I don't have
-to hand-update it. That would replace the current design recorded in ADR-0001.
-
-## Appetite
-
-Steady side-work. I'll maintain it and improve it as real needs come up, but it isn't a
-flagship and won't get its own roadmap sprints.
-
-## Standing tensions
-
-When staying generic pulls against one consumer's specific need, generic wins. I keep those
-needs in mind, but the consuming project integrates them on its side, not in here.
-
-When more flexibility would cost the one-field, one-call simplicity, simplicity wins. That
-simple integration is most of the value.
-
-Attribution stays configurable rather than fixed. A license defines the attribution it needs,
-and a license that only wants its title shown just doesn't use the feature. The CC style is a
-default, not a rule.
-
----
-
-_Written 2026-07-16. Revise as the project's direction changes._
+_Written 2026-07-16. Revise as the direction changes._

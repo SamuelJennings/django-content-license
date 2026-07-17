@@ -19,6 +19,23 @@ A Django app that allows you to associate content licenses with model instances 
 - **Internationalization**: Full i18n support with translations
 - **Performance**: Optimized database queries and indexing
 
+## Scope & philosophy
+
+django-content-license is deliberately small: it stores licenses, attaches them to your
+models, and renders attribution where a license needs it. Think of the license picker GitHub
+puts on a new repository, plus the attribution some licenses (like Creative Commons) ask you
+to show.
+
+It stays generic on purpose. It is not a citation or metadata exporter (BibTeX, DataCite,
+CSL), not a license-compatibility checker, and not tied to any one project's needs or to the
+Creative Commons attribution style.
+
+When choices collide: generic beats specific, simplicity beats flexibility, and attribution
+stays configurable: a license defines what it needs, and one that only needs its title shown
+simply doesn't use the feature.
+
+Where it's headed is tracked in [GOALS.md](GOALS.md).
+
 ## Quick Start
 
 ### Installation
