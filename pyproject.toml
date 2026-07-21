@@ -27,23 +27,17 @@ python = ">=3.11,<4.0"
 django = ">=5.2"
 
 [tool.poetry.group.dev.dependencies]
-# Family dev-tooling bundle: pytest, pytest-django, ruff, black, mypy,
-# django-stubs, deptry, pre-commit, coverage (mirrors django-easy-icons).
-fairdm-dev-tools = { git = "https://github.com/FAIR-DM/dev-tools", extras = ["dev", "test"] }
+# Family toolchain bundle; the pin tag is the family-standard version. Ships
+# ruff, mypy, deptry, pre-commit, pytest, pytest-django, coverage, django-stubs.
+# python marker: the bundle needs >=3.12; the package floor stays 3.11 for
+# consumers (constitution Article IX) — dev tooling never ships to them.
+mvp-shared = { git = "https://github.com/django-mvp/shared.git", tag = "v0.2.0", extras = ["dev", "test"], python = ">=3.12" }
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-
-[tool.black]
-line-length = 120
-target-version = ['py311']
-preview = true
-
-[tool.isort]
-profile = "black"
 
 [tool.mypy]
 files = ["licensing"]
@@ -67,7 +61,8 @@ ignore_missing_model_attributes = "True"
 target-version = "py311"
 line-length = 120
 fix = true
-exclude = ['docs/']
+# migrations are generated code — never linted or reformatted
+exclude = ['docs/', '**/migrations/**']
 
 [tool.ruff.lint]
 select = [
@@ -125,7 +120,10 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S101","S105"]
+# Tests: asserts, hardcoded test passwords, blind-exception asserts, builtin
+# shadowing (`license` fixtures), unused unpacked vars — style rules that don't
+# pay for themselves in tests, which the pre-commit hooks exclude anyway.
+"tests/*" = ["S101", "S105", "B017", "A001", "RUF059"]
 # "**/models.py" = ["A003",]
 # "docs/conf.py" = ["*"]
 
