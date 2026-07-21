@@ -11,10 +11,10 @@ licensing and attribution matter. See `CONTEXT.md` for the ubiquitous language.
 ## Stack & commands
 
 - **Stack:** Python ≥3.11 / Django 5.2 LTS + 6.0 (family standard — supported releases only),
-  Poetry-managed. Dev toolchain via the `fairdm-dev-tools` bundle. Ships to PyPI.
+  Poetry-managed. Dev toolchain via the `mvp-shared` bundle. Ships to PyPI.
 - **Install:** `poetry install`
 - **Test:** `poetry run pytest` (pytest-django; settings module `tests.settings`)
-- **Lint/format:** `poetry run pre-commit run --all-files` (ruff + black + pyupgrade; local mypy + deptry hooks)
+- **Lint/format:** `poetry run pre-commit run --all-files` (ruff lint + ruff-format; local mypy + deptry hooks)
 - **Type-check:** `poetry run mypy licensing/`
 - **Build:** `poetry build`
 - **All checks (as CI runs):** `poetry run invoke check`
