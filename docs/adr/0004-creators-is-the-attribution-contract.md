@@ -28,5 +28,5 @@ change). No new code should read singular `creator`.
 
 - One name to document and support; the glossary (CONTEXT.md → **Creators**) pins `creators`.
 - Removing `get_license_creator()` is a public-symbol removal — it ships under the deprecation
-  policy (Constitution Article V): warn one minor release before deletion, CHANGELOG entry.
+  policy (Constitution Article VIII): warn one minor release before deletion, CHANGELOG entry.
 - Until removed, the orphan is harmless but must not be built upon.
