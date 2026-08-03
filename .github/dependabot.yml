@@ -1,24 +1,7 @@
 version: 2
 updates:
-  # Enable version updates for Python dependencies
+  # Python dependencies (Poetry)
   - package-ecosystem: "pip"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-    open-pull-requests-limit: 10
-    reviewers:
-      - "SamuelJennings"
-    labels:
-      - "dependencies"
-      - "python"
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-
-  # Enable version updates for GitHub Actions
-  - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
@@ -29,7 +12,32 @@ updates:
       - "SamuelJennings"
     labels:
       - "dependencies"
+      - "python"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      python-dependencies:
+        patterns:
+          - "*"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "SamuelJennings"
+    labels:
+      - "dependencies"
       - "github-actions"
     commit-message:
       prefix: "chore"
       include: "scope"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
