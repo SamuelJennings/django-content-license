@@ -30,3 +30,20 @@ change). No new code should read singular `creator`.
 - Removing `get_license_creator()` is a public-symbol removal — it ships under the deprecation
   policy (Constitution Article VIII): warn one minor release before deletion, CHANGELOG entry.
 - Until removed, the orphan is harmless but must not be built upon.
+
+## Amendment (2026-07-30)
+
+Issue #29 flagged that "legacy orphans and will be removed" above overstates where this
+actually landed. No removal, wiring, or reconciliation has been decided or scheduled.
+
+The decision that holds today: `creators` (plural) remains the one attribution contract the
+render path reads. `get_license_creator()`, `get_license_attribution()`,
+`get_attribution_context()`, and `validate_license_field_name()` are unused outside their own
+tests, and the singular/plural naming is inconsistent. That's a thin, harmless gap on an Alpha
+package, not a defect worth a breaking change. Whether these helpers get removed, wired up,
+or reconciled with `creators` depends on the package's intended public API surface, which is a
+product-scope question for goals grilling to settle, not a foregone removal.
+
+This amendment supersedes the "legacy orphans and will be removed" line in **Decision** above;
+that original text is left in place as the historical record of what was accepted on
+2026-07-15.
