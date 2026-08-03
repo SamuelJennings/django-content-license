@@ -1,7 +1,12 @@
+"""Shared pytest fixtures for django-content-license tests.
+
+Object construction goes through :mod:`tests.factories`; the fixtures here wrap
+those factories so a test asks for what it needs rather than assembling it.
 """
-Shared pytest fixtures for django-content-license tests.
-"""
+
 import pytest
+
+from tests.factories import LicenseFactory
 
 # NOTE: do not override `django_db_setup` here. pytest-django's built-in fixture
 # creates the test database AND runs migrations; overriding it to only swap the
@@ -11,45 +16,39 @@ import pytest
 
 
 @pytest.fixture
-def license_data():
-    """Standard license data for testing."""
-    return {
-        'name': 'Test License',
-        'canonical_url': 'https://example.com/test-license',
-        'description': 'A license for testing purposes',
-        'text': 'This is the full text of the test license.',
-    }
+def license_obj():
+    """A saved :class:`~licensing.models.License` with default test values."""
+    return LicenseFactory()
 
 
 @pytest.fixture
-def mit_license_data():
-    """MIT license data for testing."""
-    return {
-        'name': 'MIT License',
-        'canonical_url': 'https://opensource.org/licenses/MIT',
-        'description': 'A permissive license that allows commercial use',
-        'text': 'Permission is hereby granted, free of charge, to any person obtaining a copy...',
-    }
+def mit_license():
+    """A saved licence carrying the MIT metadata used across the suite."""
+    return LicenseFactory(
+        name="MIT License",
+        canonical_url="https://opensource.org/licenses/MIT",
+        description="A permissive license that allows commercial use",
+        text="Permission is hereby granted, free of charge, to any person obtaining a copy...",
+    )
 
 
 @pytest.fixture
-def gpl_license_data():
-    """GPL license data for testing."""
-    return {
-        'name': 'GNU General Public License v3.0',
-        'canonical_url': 'https://www.gnu.org/licenses/gpl-3.0.html',
-        'description': 'A copyleft license that requires source code disclosure',
-        'text': 'This program is free software: you can redistribute it and/or modify...',
-    }
+def gpl_license():
+    """A saved licence carrying the GPL metadata used across the suite."""
+    return LicenseFactory(
+        name="GNU General Public License v3.0",
+        canonical_url="https://www.gnu.org/licenses/gpl-3.0.html",
+        description="A copyleft license that requires source code disclosure",
+        text="This program is free software: you can redistribute it and/or modify...",
+    )
 
 
 @pytest.fixture
-def multiple_license_data(license_data, mit_license_data, gpl_license_data):
-    """Multiple license data sets for testing."""
-    return [license_data, mit_license_data, gpl_license_data]
+def licenses(license_obj, mit_license, gpl_license):
+    """Three saved licences, for tests that need more than one row."""
+    return [license_obj, mit_license, gpl_license]
 
 
 @pytest.fixture(autouse=True)
 def enable_db_access_for_all_tests(db):
     """Automatically enable database access for all tests."""
-    pass

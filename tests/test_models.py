@@ -1,511 +1,340 @@
-"""
-Tests for the License model in django-content-license.
-Django TestCase-based tests.
-"""
-import datetime
+"""Tests for the License model in django-content-license."""
 
+import datetime
+import time
+
+import pytest
 from django.core.exceptions import ValidationError
-from django.test import TestCase
 from django.utils import timezone
 
 from licensing.models import License
+from tests.factories import LicenseFactory
 
 
-class LicenseModelTest(TestCase):
-    """Test cases for the License model using Django TestCase."""
-
-    def setUp(self):
-        """Set up test fixtures."""
-        self.valid_license_data = {
-            'name': 'MIT License',
-            'canonical_url': 'https://opensource.org/licenses/MIT',
-            'description': 'A permissive license that allows for commercial use.',
-            'text': 'Permission is hereby granted, free of charge...',
-        }
+class TestLicense:
+    """Field values, uniqueness constraints, and computed properties."""
 
     def test_license_creation_with_all_fields(self):
-        """Test creating a license with all fields."""
-        license_obj = License.objects.create(**self.valid_license_data)
+        license_obj = LicenseFactory(
+            name="MIT License",
+            canonical_url="https://opensource.org/licenses/MIT",
+            description="A permissive license that allows for commercial use.",
+            text="Permission is hereby granted, free of charge...",
+        )
 
-        self.assertEqual(license_obj.name, 'MIT License')
-        self.assertEqual(license_obj.canonical_url, 'https://opensource.org/licenses/MIT')
-        self.assertEqual(license_obj.description, 'A permissive license that allows for commercial use.')
-        self.assertEqual(license_obj.text, 'Permission is hereby granted, free of charge...')
-        self.assertTrue(license_obj.is_active)  # Default value
-        self.assertIsNone(license_obj.deprecated_date)  # Default value
-        self.assertIsNotNone(license_obj.created_at)
-        self.assertIsNotNone(license_obj.updated_at)
-        self.assertEqual(license_obj.slug, 'mit-license')  # Auto-generated
+        assert license_obj.name == "MIT License"
+        assert license_obj.canonical_url == "https://opensource.org/licenses/MIT"
+        assert license_obj.description == "A permissive license that allows for commercial use."
+        assert license_obj.text == "Permission is hereby granted, free of charge..."
+        assert license_obj.is_active is True  # Default value
+        assert license_obj.deprecated_date is None  # Default value
+        assert license_obj.created_at is not None
+        assert license_obj.updated_at is not None
+        assert license_obj.slug == "mit-license"  # Auto-generated
 
     def test_license_creation_minimal_fields(self):
-        """Test creating a license with only required fields."""
-        minimal_data = {
-            'name': 'Test License',
-            'canonical_url': 'https://example.com/test-license',
-            'text': 'This is the license text.',
-        }
-        license_obj = License.objects.create(**minimal_data)
+        license_obj = LicenseFactory(
+            name="Test License",
+            canonical_url="https://example.com/test-license",
+            text="This is the license text.",
+            description=None,
+        )
 
-        self.assertEqual(license_obj.name, 'Test License')
-        self.assertEqual(license_obj.canonical_url, 'https://example.com/test-license')
-        self.assertIsNone(license_obj.description)  # Null field
-        self.assertEqual(license_obj.text, 'This is the license text.')
-        self.assertTrue(license_obj.is_active)
+        assert license_obj.name == "Test License"
+        assert license_obj.canonical_url == "https://example.com/test-license"
+        assert license_obj.description is None  # Null field
+        assert license_obj.text == "This is the license text."
+        assert license_obj.is_active is True
 
-    def test_name_uniqueness_constraint(self):
-        """Test that license names must be unique."""
-        License.objects.create(**self.valid_license_data)
+    @pytest.mark.parametrize(
+        "field, value",
+        [
+            ("name", "Duplicate Name License"),
+            ("canonical_url", "https://example.com/duplicate"),
+        ],
+    )
+    def test_uniqueness_constraint(self, field, value):
+        LicenseFactory(**{field: value})
 
-        with self.assertRaises(Exception):  # IntegrityError or ValidationError
-            License.objects.create(**self.valid_license_data)
+        with pytest.raises(Exception):  # IntegrityError or ValidationError
+            LicenseFactory(**{field: value})
 
-    def test_canonical_url_uniqueness_constraint(self):
-        """Test that canonical URLs must be unique."""
-        License.objects.create(**self.valid_license_data)
+    def test_str_method(self, mit_license):
+        assert str(mit_license) == "MIT License"
 
-        duplicate_url_data = self.valid_license_data.copy()
-        duplicate_url_data['name'] = 'Different Name'
+    def test_repr_method(self, mit_license):
+        assert repr(mit_license) == "<License: MIT License>"
 
-        with self.assertRaises(Exception):  # IntegrityError or ValidationError
-            License.objects.create(**duplicate_url_data)
+    def test_full_name_property(self, mit_license):
+        assert mit_license.full_name == "MIT License"
 
-    def test_str_method(self):
-        """Test the __str__ method returns the license name."""
-        license_obj = License.objects.create(**self.valid_license_data)
-        self.assertEqual(str(license_obj), 'MIT License')
+    @pytest.mark.parametrize(
+        "description, expected",
+        [
+            (
+                "A permissive license that allows for commercial use.",
+                "A permissive license that allows for commercial use.",
+            ),
+            ("A" * 150, "A" * 100 + "..."),
+            ("", "No description"),
+        ],
+    )
+    def test_short_description_property(self, description, expected):
+        license_obj = LicenseFactory(description=description)
+        assert license_obj.short_description == expected
 
-    def test_repr_method(self):
-        """Test the __repr__ method returns proper representation."""
-        license_obj = License.objects.create(**self.valid_license_data)
-        self.assertEqual(repr(license_obj), '<License: MIT License>')
-
-    def test_full_name_property(self):
-        """Test the full_name property returns the name."""
-        license_obj = License.objects.create(**self.valid_license_data)
-        self.assertEqual(license_obj.full_name, 'MIT License')
-
-    def test_short_description_property_with_description(self):
-        """Test short_description property with a description."""
-        license_obj = License.objects.create(**self.valid_license_data)
-        self.assertEqual(license_obj.short_description, 'A permissive license that allows for commercial use.')
-
-    def test_short_description_property_long_description(self):
-        """Test short_description property truncates long descriptions."""
-        long_description = 'A' * 150  # 150 characters
-        data = self.valid_license_data.copy()
-        data['description'] = long_description
-
-        license_obj = License.objects.create(**data)
-        expected = 'A' * 100 + '...'
-        self.assertEqual(license_obj.short_description, expected)
-
-    def test_short_description_property_no_description(self):
-        """Test short_description property with no description."""
-        data = self.valid_license_data.copy()
-        data['description'] = ''
-
-        license_obj = License.objects.create(**data)
-        self.assertEqual(license_obj.short_description, 'No description')
-
-    def test_status_display_property_active(self):
-        """Test status_display property for active license."""
-        license_obj = License.objects.create(**self.valid_license_data)
-        self.assertEqual(license_obj.status_display, 'Active')
-
-    def test_status_display_property_deprecated(self):
-        """Test status_display property for deprecated license."""
-        data = self.valid_license_data.copy()
-        data['is_active'] = False
-
-        license_obj = License.objects.create(**data)
-        self.assertEqual(license_obj.status_display, 'Deprecated')
+    @pytest.mark.parametrize(
+        "is_active, expected",
+        [
+            (True, "Active"),
+            (False, "Deprecated"),
+        ],
+    )
+    def test_status_display_property(self, is_active, expected):
+        license_obj = LicenseFactory(is_active=is_active)
+        assert license_obj.status_display == expected
 
     def test_deprecated_date_field(self):
-        """Test the deprecated_date field."""
         deprecated_date = datetime.date(2023, 1, 1)
-        data = self.valid_license_data.copy()
-        data['deprecated_date'] = deprecated_date
-        data['is_active'] = False
-
-        license_obj = License.objects.create(**data)
-        self.assertEqual(license_obj.deprecated_date, deprecated_date)
+        license_obj = LicenseFactory(deprecated_date=deprecated_date, is_active=False)
+        assert license_obj.deprecated_date == deprecated_date
 
 
-class LicenseSlugTest(TestCase):
-    """Test cases for License slug generation."""
+class TestLicenseSlug:
+    """Slug auto-generation, uniqueness, and preservation on save."""
 
     def test_slug_auto_generation(self):
-        """Test that slug is auto-generated from name."""
-        license_obj = License.objects.create(
-            name='Creative Commons BY 4.0',
-            canonical_url='https://creativecommons.org/licenses/by/4.0/',
-            text='This is the license text.'
+        license_obj = LicenseFactory(
+            name="Creative Commons BY 4.0",
+            canonical_url="https://creativecommons.org/licenses/by/4.0/",
         )
-        self.assertEqual(license_obj.slug, 'creative-commons-by-40')
+        assert license_obj.slug == "creative-commons-by-40"
 
     def test_slug_unique_constraint_with_counter(self):
-        """Test that duplicate slugs get a counter."""
-        # Create first license
-        License.objects.create(
-            name='Test License',
-            canonical_url='https://example.com/test1',
-            text='License text 1'
-        )
+        LicenseFactory(name="Test License")
 
-        # Create second license with same slug-generating name
-        license2 = License.objects.create(
-            name='Test License!!!',  # Will generate same slug due to special chars
-            canonical_url='https://example.com/test2',
-            text='License text 2'
-        )
+        # Same slug-generating name, different special characters.
+        license2 = LicenseFactory(name="Test License!!!")
 
-        # Check that slug got incremented
-        self.assertEqual(license2.slug, 'test-license-1')
+        assert license2.slug == "test-license-1"
 
     def test_manual_slug_is_preserved(self):
-        """Test that manually set slugs are preserved."""
-        license_obj = License.objects.create(
-            name='MIT License',
-            canonical_url='https://opensource.org/licenses/MIT',
-            text='License text',
-            slug='custom-mit-slug'
-        )
-        self.assertEqual(license_obj.slug, 'custom-mit-slug')
+        license_obj = LicenseFactory(name="MIT License", slug="custom-mit-slug")
+        assert license_obj.slug == "custom-mit-slug"
 
     def test_slug_with_special_characters(self):
-        """Test slug generation with special characters."""
-        license_obj = License.objects.create(
-            name='GPL-3.0+',
-            canonical_url='https://www.gnu.org/licenses/gpl-3.0.html',
-            text='License text'
-        )
-        self.assertEqual(license_obj.slug, 'gpl-30')
+        license_obj = LicenseFactory(name="GPL-3.0+")
+        assert license_obj.slug == "gpl-30"
 
     def test_slug_update_on_save(self):
-        """Test that slug is generated when missing on existing object."""
-        license_obj = License.objects.create(
-            name='BSD License',
-            canonical_url='https://opensource.org/licenses/BSD-3-Clause',
-            text='License text',
-            slug='original-slug'
-        )
+        license_obj = LicenseFactory(name="BSD License", slug="original-slug")
 
-        # Clear the slug and save
-        license_obj.slug = ''
+        # Clear the slug and save.
+        license_obj.slug = ""
         license_obj.save()
 
-        # Slug should be regenerated
-        self.assertEqual(license_obj.slug, 'bsd-license')
+        # Slug should be regenerated.
+        assert license_obj.slug == "bsd-license"
 
     def test_slug_generation_with_empty_name_fallback(self):
-        """Test slug generation fallback when name doesn't generate valid slug."""
-        license_obj = License.objects.create(
-            name='!!!',  # Name that doesn't generate a valid slug
-            canonical_url='https://example.com/test-empty',
-            text='Test license text'
-        )
-        self.assertEqual(license_obj.slug, 'license')
+        license_obj = LicenseFactory(name="!!!")  # Doesn't generate a valid slug
+        assert license_obj.slug == "license"
 
     def test_slug_generation_preserves_existing_on_update(self):
-        """Test that slug is preserved when updating other fields."""
-        license_obj = License.objects.create(
-            name='Original Name',
-            canonical_url='https://example.com/original',
-            text='Original text'
-        )
+        license_obj = LicenseFactory(name="Original Name")
         original_slug = license_obj.slug
 
-        # Update other field
-        license_obj.text = 'Updated text'
+        license_obj.text = "Updated text"
         license_obj.save()
 
-        # Slug should remain the same
-        self.assertEqual(license_obj.slug, original_slug)
+        assert license_obj.slug == original_slug
 
     def test_slug_generation_with_multiple_conflicts(self):
-        """Test slug generation when multiple conflicts exist."""
-        # Create licenses that will cause multiple conflicts
-        License.objects.create(
-            name='Conflict Test 1',
-            canonical_url='https://example.com/conflict1',
-            text='First conflict test'
-        )
-        License.objects.create(
-            name='Conflict Test 2',
-            canonical_url='https://example.com/conflict2',
-            text='Second conflict test'
-        )
+        license1 = LicenseFactory(name="Conflict Test 1")
+        license2 = LicenseFactory(name="Conflict Test 2")
+        license3 = LicenseFactory(name="Conflict Test 3")
 
-        # Third license should get -2 suffix (names are different but will generate similar slugs)
-        license3 = License.objects.create(
-            name='Conflict Test 3',
-            canonical_url='https://example.com/conflict3',
-            text='Third conflict test'
-        )
+        slugs = [license1.slug, license2.slug, license3.slug]
 
-        # All should have different slugs
-        slugs = [License.objects.get(name='Conflict Test 1').slug,
-                License.objects.get(name='Conflict Test 2').slug,
-                license3.slug]
-
-        # All slugs should be unique
-        self.assertEqual(len(slugs), len(set(slugs)))
+        assert len(slugs) == len(set(slugs))
 
     def test_slug_update_avoids_self_conflict(self):
-        """Test that slug update doesn't conflict with itself."""
-        license_obj = License.objects.create(
-            name='Self Conflict Test',
-            canonical_url='https://example.com/self-conflict',
-            text='Self conflict test'
-        )
+        license_obj = LicenseFactory(name="Self Conflict Test")
         original_slug = license_obj.slug
 
-        # Update the license (which triggers save and slug generation)
-        license_obj.text = 'Updated text'
+        # Update the license (which triggers save and slug generation).
+        license_obj.text = "Updated text"
         license_obj.save()
 
-        # Should keep the same slug, not add a counter
-        self.assertEqual(license_obj.slug, original_slug)
+        # Should keep the same slug, not add a counter.
+        assert license_obj.slug == original_slug
 
 
-class LicenseQuerySetTest(TestCase):
-    """Test cases for License model querysets and class methods."""
+@pytest.fixture
+def three_licenses():
+    """Three saved licences spanning active, deprecated, and CC states."""
+    active = LicenseFactory(
+        name="MIT License",
+        canonical_url="https://opensource.org/licenses/MIT",
+        text="MIT license text",
+        is_active=True,
+    )
+    deprecated = LicenseFactory(
+        name="Old License",
+        canonical_url="https://example.com/old",
+        text="Old license text",
+        is_active=False,
+        deprecated_date=datetime.date(2020, 1, 1),
+    )
+    cc = LicenseFactory(
+        name="Creative Commons BY 4.0",
+        canonical_url="https://creativecommons.org/licenses/by/4.0/",
+        text="CC BY license text",
+        is_active=True,
+    )
+    return active, deprecated, cc
 
-    def setUp(self):
-        """Set up test licenses."""
-        self.active_license = License.objects.create(
-            name='MIT License',
-            canonical_url='https://opensource.org/licenses/MIT',
-            text='MIT license text',
-            is_active=True
-        )
 
-        self.deprecated_license = License.objects.create(
-            name='Old License',
-            canonical_url='https://example.com/old',
-            text='Old license text',
-            is_active=False,
-            deprecated_date=datetime.date(2020, 1, 1)
-        )
+class TestLicenseQuerySet:
+    """Querysets and class methods over multiple licenses."""
 
-        self.cc_license = License.objects.create(
-            name='Creative Commons BY 4.0',
-            canonical_url='https://creativecommons.org/licenses/by/4.0/',
-            text='CC BY license text',
-            is_active=True
-        )
-
-    def test_get_recommended_licenses(self):
-        """Test the get_recommended_licenses class method."""
+    def test_get_recommended_licenses(self, three_licenses):
+        active, deprecated, cc = three_licenses
         recommended = License.get_recommended_licenses()
 
-        # Should only include active licenses
-        self.assertIn(self.active_license, recommended)
-        self.assertIn(self.cc_license, recommended)
-        self.assertNotIn(self.deprecated_license, recommended)
+        # Should only include active licenses.
+        assert active in recommended
+        assert cc in recommended
+        assert deprecated not in recommended
 
-        # Should be ordered by name
+        # Should be ordered by name.
         license_names = [license.name for license in recommended]
-        self.assertEqual(license_names, sorted(license_names))
+        assert license_names == sorted(license_names)
 
-    def test_ordering_by_name(self):
-        """Test that licenses are ordered by name by default."""
+    def test_ordering_by_name(self, three_licenses):
         licenses = License.objects.all()
         license_names = [license.name for license in licenses]
-        self.assertEqual(license_names, sorted(license_names))
+        assert license_names == sorted(license_names)
 
-    def test_filtering_by_is_active(self):
-        """Test filtering licenses by is_active field."""
+    def test_filtering_by_is_active(self, three_licenses):
         active_licenses = License.objects.filter(is_active=True)
-        self.assertEqual(active_licenses.count(), 2)
+        assert active_licenses.count() == 2
 
         deprecated_licenses = License.objects.filter(is_active=False)
-        self.assertEqual(deprecated_licenses.count(), 1)
+        assert deprecated_licenses.count() == 1
 
-    def test_index_usage(self):
-        """Test that database indexes exist (basic check)."""
-        # This is more of a smoke test - real index testing would need database inspection
+    def test_index_usage(self, three_licenses):
+        # Smoke test - real index testing would need database inspection.
         License.objects.filter(is_active=True)
-        License.objects.filter(slug='mit-license')
-        # If these queries run without error, the indexes exist
+        License.objects.filter(slug="mit-license")
+        # If these queries run without error, the indexes exist.
 
 
-class LicenseValidationTest(TestCase):
-    """Test cases for License model validation."""
+class TestLicenseValidation:
+    """full_clean() and clean() validation behaviour."""
 
-    def test_empty_name_validation(self):
-        """Test that empty name raises validation error."""
-        with self.assertRaises(ValidationError):
-            license_obj = License(
-                name='',
-                canonical_url='https://example.com/test',
-                text='License text'
-            )
-            license_obj.full_clean()
+    @pytest.mark.parametrize(
+        "overrides",
+        [
+            {"name": ""},
+            {"canonical_url": ""},
+            {"text": ""},
+            {"canonical_url": "not-a-valid-url"},
+            {"name": "A" * 256},  # Exceeds max_length=255
+            {"canonical_url": "https://example.com/" + "a" * 500},  # Exceeds max_length=500
+        ],
+    )
+    def test_full_clean_validation_errors(self, overrides):
+        fields = {
+            "name": "Test License",
+            "canonical_url": "https://example.com/test",
+            "text": "License text",
+        }
+        fields.update(overrides)
+        license_obj = LicenseFactory.build(**fields)
 
-    def test_empty_canonical_url_validation(self):
-        """Test that empty canonical_url raises validation error."""
-        with self.assertRaises(ValidationError):
-            license_obj = License(
-                name='Test License',
-                canonical_url='',
-                text='License text'
-            )
-            license_obj.full_clean()
-
-    def test_empty_text_validation(self):
-        """Test that empty text raises validation error."""
-        with self.assertRaises(ValidationError):
-            license_obj = License(
-                name='Test License',
-                canonical_url='https://example.com/test',
-                text=''
-            )
-            license_obj.full_clean()
-
-    def test_invalid_url_validation(self):
-        """Test that invalid URL raises validation error."""
-        with self.assertRaises(ValidationError):
-            license_obj = License(
-                name='Test License',
-                canonical_url='not-a-valid-url',
-                text='License text'
-            )
-            license_obj.full_clean()
-
-    def test_name_max_length_validation(self):
-        """Test name field max length validation."""
-        long_name = 'A' * 256  # Exceeds max_length=255
-        with self.assertRaises(ValidationError):
-            license_obj = License(
-                name=long_name,
-                canonical_url='https://example.com/test',
-                text='License text'
-            )
-            license_obj.full_clean()
-
-    def test_canonical_url_max_length_validation(self):
-        """Test canonical_url field max length validation."""
-        long_url = 'https://example.com/' + 'a' * 500  # Exceeds max_length=500
-        with self.assertRaises(ValidationError):
-            license_obj = License(
-                name='Test License',
-                canonical_url=long_url,
-                text='License text'
-            )
+        with pytest.raises(ValidationError):
             license_obj.full_clean()
 
     def test_deprecated_license_without_date_validation(self):
-        """Test that deprecated license without deprecated_date raises validation error."""
-        with self.assertRaises(ValidationError) as cm:
-            license_obj = License(
-                name='Deprecated License',
-                canonical_url='https://example.com/deprecated',
-                text='Deprecated license text',
-                is_active=False  # Deprecated but no deprecated_date
-            )
+        license_obj = LicenseFactory.build(
+            name="Deprecated License",
+            canonical_url="https://example.com/deprecated",
+            text="Deprecated license text",
+            is_active=False,  # Deprecated but no deprecated_date
+        )
+
+        with pytest.raises(ValidationError) as excinfo:
             license_obj.clean()
 
-        self.assertIn('deprecated_date', cm.exception.error_dict)
-        self.assertIn('Deprecated licenses must have a deprecated date',
-                      str(cm.exception.error_dict['deprecated_date'][0]))
+        assert "deprecated_date" in excinfo.value.error_dict
+        assert "Deprecated licenses must have a deprecated date" in str(excinfo.value.error_dict["deprecated_date"][0])
 
     def test_active_license_with_deprecated_date_validation(self):
-        """Test that active license with deprecated_date raises validation error."""
-        with self.assertRaises(ValidationError) as cm:
-            license_obj = License(
-                name='Active License',
-                canonical_url='https://example.com/active',
-                text='Active license text',
-                is_active=True,
-                deprecated_date=datetime.date.today()  # Active but has deprecated_date
-            )
-            license_obj.clean()
-
-        self.assertIn('deprecated_date', cm.exception.error_dict)
-        self.assertIn('Active licenses should not have a deprecated date',
-                      str(cm.exception.error_dict['deprecated_date'][0]))
-
-    def test_deprecated_license_with_date_validation_passes(self):
-        """Test that deprecated license with deprecated_date passes validation."""
-        license_obj = License(
-            name='Properly Deprecated License',
-            canonical_url='https://example.com/properly-deprecated',
-            text='Properly deprecated license text',
-            is_active=False,
-            deprecated_date=datetime.date.today()
+        license_obj = LicenseFactory.build(
+            name="Active License",
+            canonical_url="https://example.com/active",
+            text="Active license text",
+            is_active=True,
+            deprecated_date=datetime.date.today(),  # Active but has deprecated_date
         )
 
-        # Should not raise any validation error
-        try:
+        with pytest.raises(ValidationError) as excinfo:
             license_obj.clean()
-        except ValidationError:
-            self.fail("clean() raised ValidationError unexpectedly for valid deprecated license")
 
-    def test_active_license_without_deprecated_date_validation_passes(self):
-        """Test that active license without deprecated_date passes validation."""
-        license_obj = License(
-            name='Active License',
-            canonical_url='https://example.com/active-proper',
-            text='Active license text',
-            is_active=True
-            # No deprecated_date - this is correct for active licenses
+        assert "deprecated_date" in excinfo.value.error_dict
+        assert "Active licenses should not have a deprecated date" in str(
+            excinfo.value.error_dict["deprecated_date"][0]
         )
 
-        # Should not raise any validation error
-        try:
-            license_obj.clean()
-        except ValidationError:
-            self.fail("clean() raised ValidationError unexpectedly for valid active license")
+    @pytest.mark.parametrize(
+        "overrides",
+        [
+            {"is_active": False, "deprecated_date": datetime.date.today()},
+            {"is_active": True},
+        ],
+    )
+    def test_clean_passes_for_consistent_state(self, overrides):
+        fields = {
+            "name": "Consistent License",
+            "canonical_url": "https://example.com/consistent",
+            "text": "Consistent license text",
+        }
+        fields.update(overrides)
+        license_obj = LicenseFactory.build(**fields)
+
+        license_obj.clean()  # Should not raise
 
 
-class LicenseTimestampTest(TestCase):
-    """Test cases for License model timestamps."""
+class TestLicenseTimestamps:
+    """created_at / updated_at auto-population."""
 
     def test_created_at_auto_now_add(self):
-        """Test that created_at is set automatically on creation."""
         before_creation = timezone.now()
-        license_obj = License.objects.create(
-            name='Test License',
-            canonical_url='https://example.com/test',
-            text='License text'
-        )
+        license_obj = LicenseFactory()
         after_creation = timezone.now()
 
-        self.assertIsNotNone(license_obj.created_at)
-        self.assertGreaterEqual(license_obj.created_at, before_creation)
-        self.assertLessEqual(license_obj.created_at, after_creation)
+        assert license_obj.created_at is not None
+        assert license_obj.created_at >= before_creation
+        assert license_obj.created_at <= after_creation
 
     def test_updated_at_auto_now(self):
-        """Test that updated_at is updated automatically on save."""
-        license_obj = License.objects.create(
-            name='Test License',
-            canonical_url='https://example.com/test',
-            text='License text'
-        )
+        license_obj = LicenseFactory()
         original_updated_at = license_obj.updated_at
 
-        # Small delay to ensure timestamp difference
-        import time
+        # Small delay to ensure timestamp difference.
         time.sleep(0.01)
 
-        # Update the license
-        license_obj.description = 'Updated description'
+        license_obj.description = "Updated description"
         license_obj.save()
 
-        self.assertGreater(license_obj.updated_at, original_updated_at)
+        assert license_obj.updated_at > original_updated_at
 
     def test_created_at_unchanged_on_update(self):
-        """Test that created_at doesn't change on updates."""
-        license_obj = License.objects.create(
-            name='Test License',
-            canonical_url='https://example.com/test',
-            text='License text'
-        )
+        license_obj = LicenseFactory()
         original_created_at = license_obj.created_at
 
-        # Update the license
-        license_obj.description = 'Updated description'
+        license_obj.description = "Updated description"
         license_obj.save()
 
-        self.assertEqual(license_obj.created_at, original_created_at)
+        assert license_obj.created_at == original_created_at
