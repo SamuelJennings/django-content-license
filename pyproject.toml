@@ -150,7 +150,14 @@ markers = [
 filterwarnings = [
     "ignore",
     "ignore::DeprecationWarning",
-    "ignore::PendingDeprecationWarning"
+    "ignore::PendingDeprecationWarning",
+    # Later entries win, so this one survives the blanket "ignore" above.
+    # Several field/util tests define throwaway models inside the test body, and
+    # the app registry is keyed on (app_label, model_name) — two tests reusing a
+    # name silently overwrite each other's entry, leaving a test asserting against
+    # a class it did not define. Django warns about it; make that warning fatal so
+    # the collision cannot creep back in unnoticed.
+    "error:Model '.*' was already registered:RuntimeWarning",
 ]
 
 [tool.coverage.report]

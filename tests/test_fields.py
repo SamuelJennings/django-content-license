@@ -187,7 +187,7 @@ class TestLicenseFieldContributeToClass:
         assert callable(TestModel.get_license_display)
 
     def test_does_not_override_existing_method(self):
-        class TestModel(models.Model):
+        class CustomDisplayModel(models.Model):
             license = LicenseField()
 
             def get_license_display(self):
@@ -196,18 +196,18 @@ class TestLicenseFieldContributeToClass:
             class Meta:
                 app_label = "test"
 
-        instance = TestModel()
+        instance = CustomDisplayModel()
         assert instance.get_license_display() == "Custom display method"
 
     def test_different_field_name(self):
-        class TestModel(models.Model):
+        class ContentLicensedModel(models.Model):
             content_license = LicenseField()
 
             class Meta:
                 app_label = "test"
 
-        assert hasattr(TestModel, "get_content_license_display")
-        assert callable(TestModel.get_content_license_display)
+        assert hasattr(ContentLicensedModel, "get_content_license_display")
+        assert callable(ContentLicensedModel.get_content_license_display)
 
 
 @pytest.fixture

@@ -314,14 +314,14 @@ class TestValidateLicenseFieldName:
     def test_valid_field(self):
         """Test validation with valid license field."""
 
-        class UtilsTestModel(models.Model):
+        class ValidFieldModel(models.Model):
             license = models.ForeignKey("licensing.License", on_delete=models.CASCADE)
             name = models.CharField(max_length=100)
 
             class Meta:
                 app_label = "test"
 
-        result = validate_license_field_name(UtilsTestModel, "license")
+        result = validate_license_field_name(ValidFieldModel, "license")
 
         assert result is True
 
@@ -358,7 +358,7 @@ class TestValidateLicenseFieldName:
     def test_missing_field(self):
         """Test validation with missing field."""
 
-        class UtilsTestModel(models.Model):
+        class MissingFieldModel(models.Model):
             license = models.ForeignKey("licensing.License", on_delete=models.CASCADE)
             name = models.CharField(max_length=100)
 
@@ -366,14 +366,14 @@ class TestValidateLicenseFieldName:
                 app_label = "test"
 
         with pytest.raises(LicenseFieldNotFoundError) as exc_info:
-            validate_license_field_name(UtilsTestModel, "nonexistent")
+            validate_license_field_name(MissingFieldModel, "nonexistent")
 
         assert "has no field 'nonexistent'" in str(exc_info.value)
 
     def test_non_foreign_key(self):
         """Test validation with non-foreign key field."""
 
-        class UtilsTestModel(models.Model):
+        class NonForeignKeyModel(models.Model):
             license = models.ForeignKey("licensing.License", on_delete=models.CASCADE)
             name = models.CharField(max_length=100)
 
@@ -381,7 +381,7 @@ class TestValidateLicenseFieldName:
                 app_label = "test"
 
         with pytest.raises(InvalidLicenseFieldError) as exc_info:
-            validate_license_field_name(UtilsTestModel, "name")
+            validate_license_field_name(NonForeignKeyModel, "name")
 
         assert "is not a valid license field" in str(exc_info.value)
 

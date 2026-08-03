@@ -10,6 +10,11 @@ from django.utils import timezone
 from licensing.models import License
 from tests.factories import LicenseFactory
 
+# The deprecation rules only care whether a date is set, never which one. A fixed
+# date keeps the parametrize arguments (evaluated at collection) and the assertions
+# (evaluated later) from straddling a midnight boundary in a long CI run.
+DEPRECATION_DATE = datetime.date(2026, 1, 1)
+
 
 class TestLicense:
     """Field values, uniqueness constraints, and computed properties."""
@@ -223,11 +228,18 @@ class TestLicenseQuerySet:
         deprecated_licenses = License.objects.filter(is_active=False)
         assert deprecated_licenses.count() == 1
 
-    def test_index_usage(self, three_licenses):
-        # Smoke test - real index testing would need database inspection.
-        License.objects.filter(is_active=True)
-        License.objects.filter(slug="mit-license")
-        # If these queries run without error, the indexes exist.
+    def test_declared_indexes(self):
+        """The fields the lookup paths rely on are actually indexed.
+
+        The previous version of this test built two querysets and asserted
+        nothing. Querysets are lazy, so it never reached the database and could
+        only have failed if a field name disappeared. The index declaration on
+        Meta is the thing worth guarding, so assert against that directly.
+        """
+        indexed = {tuple(index.fields) for index in License._meta.indexes}
+
+        assert ("is_active",) in indexed
+        assert ("slug",) in indexed
 
 
 class TestLicenseValidation:
@@ -276,7 +288,7 @@ class TestLicenseValidation:
             canonical_url="https://example.com/active",
             text="Active license text",
             is_active=True,
-            deprecated_date=datetime.date.today(),  # Active but has deprecated_date
+            deprecated_date=DEPRECATION_DATE,  # Active but has deprecated_date
         )
 
         with pytest.raises(ValidationError) as excinfo:
@@ -290,7 +302,7 @@ class TestLicenseValidation:
     @pytest.mark.parametrize(
         "overrides",
         [
-            {"is_active": False, "deprecated_date": datetime.date.today()},
+            {"is_active": False, "deprecated_date": DEPRECATION_DATE},
             {"is_active": True},
         ],
     )
