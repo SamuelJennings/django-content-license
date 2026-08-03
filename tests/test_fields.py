@@ -172,24 +172,6 @@ class TestLicenseFieldInheritance:
 
         assert hasattr(LicensedModel, "get_license_display")
 
-    def test_with_abstract_base_class_regression(self):
-        """Regression guard: kept alongside test_with_abstract_base_class per the
-        original suite's separate validation/regression test classes."""
-
-        class BaseModel(models.Model):
-            name = models.CharField(max_length=100)
-
-            class Meta:
-                abstract = True
-
-        class LicensedModel(BaseModel):
-            license = LicenseField()
-
-            class Meta:
-                app_label = "test"
-
-        assert hasattr(LicensedModel, "get_license_display")
-
 
 class TestLicenseFieldContributeToClass:
     """contribute_to_class adds a get_<field>_display method to the model."""
