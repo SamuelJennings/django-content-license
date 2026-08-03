@@ -30,7 +30,7 @@ django = ">=5.2"
 # Family toolchain bundle; the pin tag is the family-standard version. Ships
 # ruff, mypy, deptry, pre-commit, pytest, pytest-django, coverage, django-stubs.
 # python marker: the bundle needs >=3.12; the package floor stays 3.11 for
-# consumers (constitution Article IX) — dev tooling never ships to them.
+# consumers (constitution Article XII) — dev tooling never ships to them.
 mvp-shared = { git = "https://github.com/django-mvp/shared.git", tag = "v0.2.0", extras = ["dev", "test"], python = ">=3.12" }
 
 
