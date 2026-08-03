@@ -66,8 +66,10 @@ only thing most templates call.
 The author(s) of a licensed instance, read off the host model's `creators` attribute
 (string or related object). Optional; absent creators render as "Unknown". **`creators`
 (plural) is the canonical attribution contract** — it is what `get_license_attribution()` and
-`licensing/snippet.html` read. The singular `creator` read by `get_license_creator()` is a
-legacy orphan with no production caller and is slated for removal; do not build on it.
+`licensing/snippet.html` read. The singular `creator` read by `get_license_creator()` has no
+production caller and is inconsistent with it; do not build on it. Whether it's removed, wired
+up, or reconciled with `creators` is deferred to goals grilling, not yet a scheduled removal
+(corrected 2026-07-30; see ADR-0004 Amendment).
 
 ### Slug
 
@@ -94,8 +96,10 @@ content cannot be deleted — retirement happens through the **License Lifecycle
 1. **README ↔ code drift** — RESOLVED (stale docs, pruned in PR #27). The phantom features
    (template tags, package admin, `get_compatibility_with()`, ghost test files, ReadTheDocs)
    were removed from the README rather than kept as roadmap.
-2. **`creator` vs `creators`** — RESOLVED: `creators` (plural) is canonical; the singular
-   `creator` / `get_license_creator()` is a legacy orphan to be removed (see **Creators**).
+2. **`creator` vs `creators`** — RESOLVED: `creators` (plural) is the canonical attribution
+   contract for the live render path. Whether the singular `creator` / `get_license_creator()`
+   is removed, wired up, or reconciled with it is not resolved — deferred to goals grilling
+   (see **Creators**; corrected 2026-07-30, see ADR-0004 Amendment).
 3. **Stored-catalogue vs external registry** — RESOLVED: the per-deployment stored catalogue
    is the intended design (ADR-0001, Accepted). `creativecommons.json.gz` is optional seed
    data, not a sync. Pulling from an external registry (SPDX / Creative Commons API) would be
