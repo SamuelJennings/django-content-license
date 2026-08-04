@@ -29,7 +29,10 @@ class TestLicense:
 
         assert license_obj.name == "MIT License"
         assert license_obj.canonical_url == "https://opensource.org/licenses/MIT"
-        assert license_obj.description == "A permissive license that allows for commercial use."
+        assert (
+            license_obj.description
+            == "A permissive license that allows for commercial use."
+        )
         assert license_obj.text == "Permission is hereby granted, free of charge..."
         assert license_obj.is_active is True  # Default value
         assert license_obj.deprecated_date is None  # Default value
@@ -253,7 +256,9 @@ class TestLicenseValidation:
             {"text": ""},
             {"canonical_url": "not-a-valid-url"},
             {"name": "A" * 256},  # Exceeds max_length=255
-            {"canonical_url": "https://example.com/" + "a" * 500},  # Exceeds max_length=500
+            {
+                "canonical_url": "https://example.com/" + "a" * 500
+            },  # Exceeds max_length=500
         ],
     )
     def test_full_clean_validation_errors(self, overrides):
@@ -280,7 +285,9 @@ class TestLicenseValidation:
             license_obj.clean()
 
         assert "deprecated_date" in excinfo.value.error_dict
-        assert "Deprecated licenses must have a deprecated date" in str(excinfo.value.error_dict["deprecated_date"][0])
+        assert "Deprecated licenses must have a deprecated date" in str(
+            excinfo.value.error_dict["deprecated_date"][0]
+        )
 
     def test_active_license_with_deprecated_date_validation(self):
         license_obj = LicenseFactory.build(

@@ -13,7 +13,9 @@ class LicenseField(models.ForeignKey):
         kwargs["to"] = "licensing.License"
         kwargs.setdefault("on_delete", models.PROTECT)
         kwargs.setdefault("verbose_name", _("license"))
-        kwargs.setdefault("help_text", _("The license under which this content is published"))
+        kwargs.setdefault(
+            "help_text", _("The license under which this content is published")
+        )
         super().__init__(*args, **kwargs)
 
     def contribute_to_class(self, cls, name, **kwargs):
