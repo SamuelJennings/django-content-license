@@ -101,6 +101,40 @@ the rule.
   `django_assert_num_queries` (never wall-clock timing). `factory_boy` and `pytest-django` ship
   pinned in the `mvp-shared[test]` bundle — no per-repo pinning.
 
+### Article XIV — Cohesion (Python)
+Related behaviour is grouped in a class, not scattered across module-level functions.
+
+**The test:** two or more module-level functions that share a *subject* belong on a class. They
+share a subject when they operate on the same data, take the same first argument, are only
+meaningful in sequence, or are named around the same noun (`build_x`, `validate_x`, `render_x`).
+
+**Why this is a standard and not a taste.** In a published package, a class is the extension
+point. A consumer who needs different behaviour subclasses it and overrides one method. A module
+of functions can only be monkey-patched, which is not a supported interface and breaks on any
+internal change. Grouping also gives the behaviour a name, a place for shared configuration, and
+one import instead of six.
+
+**Shape:** shared state or configuration → a regular class holding it. Grouping for namespacing
+with no shared state → still a class, with `@classmethod`/`@staticmethod`, or a small frozen
+dataclass carrying the config. Expose a module-level convenience function only as a thin wrapper
+over the class, never as the implementation.
+
+**Django first.** Where the framework already owns the grouping, use it rather than inventing a
+class: a `QuerySet`/`Manager` method instead of a function taking a queryset, a model method or
+property instead of a function taking an instance, a `Form`/`Serializer` method instead of a free
+validation function, a `TemplateView` method instead of a helper called by a view.
+
+**Exceptions — narrow, and stated rather than assumed.** A genuinely standalone pure function with
+no siblings. Framework-dictated module shapes: `conftest.py` fixtures, migrations, `urls.py`,
+`apps.py`, decorator-registered template tags and filters, signal receivers, management-command
+entry points. Factory functions that return the class. A module of independent utilities that
+genuinely share no subject.
+
+**This does not license abstraction.** Article III still holds: one class grouping today's
+behaviour is the goal, not a base class, a registry, or a hierarchy built for a second
+implementation that does not exist. Grouping related functions is organisation; adding a layer
+between the caller and the work is not.
+
 ## Project articles
 
 ### Article XI — Public API stability
@@ -146,7 +180,7 @@ bundled `creativecommons.json.gz` fixture loadable.
 
 ---
 
-**Version**: 1.1.0 | **Ratified**: 2026-07-15 | **Last Amended**: 2026-08-03
+**Version**: 1.2.0 | **Ratified**: 2026-07-15 | **Last Amended**: 2026-08-05
 <!-- 1.0.0 is the constitution as it stood before this footer existed: authored at onboarding
      2026-07-15, core articles V-VII added 2026-07-21. 1.1.0 adds core articles VIII-X and
      renumbers the project articles to XI-XIII. Semantic versioning applies: MAJOR for a
