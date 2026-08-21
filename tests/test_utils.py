@@ -101,7 +101,9 @@ class TestGetLicenseAttribution:
         assert result["title"] == "Test Object"
         assert result["link"] == "/object/1/"
         assert result["creators"] == creator
-        assert result["creators_link"] is None  # Should be None because creator has no URL
+        assert (
+            result["creators_link"] is None
+        )  # Should be None because creator has no URL
 
     def test_exception_handling(self):
         """Test get_license_attribution exception handling."""
@@ -138,7 +140,9 @@ class TestGetLicenseAttribution:
         get_license_attribution(model_instance)
 
         mock_logger.warning.assert_called_once()
-        assert "Error getting license attribution" in mock_logger.warning.call_args[0][0]
+        assert (
+            "Error getting license attribution" in mock_logger.warning.call_args[0][0]
+        )
 
     def test_empty_creators(self):
         """Test get_license_attribution with empty creators."""

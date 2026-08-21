@@ -35,7 +35,9 @@ class LicenseAdmin(admin.ModelAdmin):
     get_name_display.short_description = _("name")
 
     def get_canonical_url_display(self, obj):
-        return mark_safe(f'<a href="{obj.canonical_url}" target="_blank">{obj.canonical_url}</a>')
+        return mark_safe(
+            f'<a href="{obj.canonical_url}" target="_blank">{obj.canonical_url}</a>'
+        )
 
     get_canonical_url_display.short_description = _("canonical URL")
 

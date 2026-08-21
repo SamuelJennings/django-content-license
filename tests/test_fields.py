@@ -52,7 +52,9 @@ class TestLicenseField:
         assert field.remote_field.on_delete == models.PROTECT
         # verbose_name and help_text are lazy strings, so compare their str()
         assert str(field.verbose_name) == "license"
-        assert str(field.help_text) == "The license under which this content is published"
+        assert (
+            str(field.help_text) == "The license under which this content is published"
+        )
 
     def test_custom_values(self):
         field = LicenseField(
@@ -110,7 +112,11 @@ class TestLicenseFieldOnDelete:
         ],
     )
     def test_on_delete(self, on_delete_kwarg, expected):
-        field = LicenseField(on_delete=on_delete_kwarg) if on_delete_kwarg else LicenseField()
+        field = (
+            LicenseField(on_delete=on_delete_kwarg)
+            if on_delete_kwarg
+            else LicenseField()
+        )
 
         assert field.remote_field.on_delete == expected
 
@@ -267,7 +273,9 @@ class TestLicenseAttributionTemplate:
 
         assert 'href="/object/1/"' in rendered
         assert "My Article" in rendered
-        assert " by " not in rendered  # No creator mentioned (check for word boundaries)
+        assert (
+            " by " not in rendered
+        )  # No creator mentioned (check for word boundaries)
         assert 'href="https://creativecommons.org/licenses/by/4.0/"' in rendered
         assert "Creative Commons BY 4.0" in rendered
 

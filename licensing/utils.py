@@ -58,7 +58,9 @@ def get_license_attribution(model_instance):
         # Try to get creators link if creators exist
         if hasattr(model_instance, "creators") and model_instance.creators:
             try:
-                creators_link = getattr(model_instance.creators, "get_absolute_url", lambda: None)()
+                creators_link = getattr(
+                    model_instance.creators, "get_absolute_url", lambda: None
+                )()
             except AttributeError:
                 # Creator has no URL - this is fine, just leave creators_link as None
                 creators_link = None
@@ -111,7 +113,9 @@ def html_snippet(model_instance, field_name):
         if not license_obj:
             return ""
 
-        snippet = render_to_string("licensing/snippet.html", {"object": model_instance, "license": license_obj})
+        snippet = render_to_string(
+            "licensing/snippet.html", {"object": model_instance, "license": license_obj}
+        )
         return mark_safe(snippet)
     except Exception as e:
         logger.warning(f"Error generating license snippet: {e}")
