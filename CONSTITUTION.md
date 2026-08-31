@@ -1,7 +1,7 @@
 # django-content-license Constitution
 
 <!-- Authored at org onboarding (2026-07-15), mirroring the django-mvp family standard
-     (see django-easy-icons/memory/constitution.md). Shared articles V-VII propagated from
+     (see django-easy-icons/CONSTITUTION.md). Shared articles V-VII propagated from
      the family template 2026-07-21 (project articles renumbered VIII-X); shared articles
      VIII-X propagated 2026-08-03 (project articles renumbered XI-XIII, wording unchanged).
      Changes go through the constitution pathway (human-gated), never mid-feature. Read at
