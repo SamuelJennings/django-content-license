@@ -23,7 +23,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = ">=3.11,<4.0"
 # Only actively supported Django releases (family standard). 5.2 LTS + current
-# stable; dropping a version is a constitution-level change (memory/constitution.md).
+# stable; dropping a version is a constitution-level change (CONSTITUTION.md).
 django = ">=5.2"
 
 [tool.poetry.group.dev.dependencies]

@@ -47,4 +47,4 @@ org's CI audit record in the registry.
 This repo is operated by the autonomous engineering org (Forge). Feature work runs
 spec→plan→tasks→implement→review→PR through org-side skills — there is no Spec Kit install
 here; `specs/NNN-slug/` directories are generated per feature. Constitution:
-`memory/constitution.md`. Budget overrides: none.
+`CONSTITUTION.md`. Budget overrides: none.
