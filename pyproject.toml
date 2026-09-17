@@ -58,66 +58,17 @@ django_settings_module = "tests.settings"
 ignore_missing_model_attributes = "True"
 
 [tool.ruff]
-target-version = "py311"
-# line-length is deliberately unset: Ruff's default is 88, matching Black, which
-# is what Django, pytest and httpx ship. PEP 8 caps a team's own preference at 99.
-fix = true
-# migrations are generated code — never linted or reformatted
-exclude = ['docs/', '**/migrations/**']
+extend = "ruff-base.toml"
 
 [tool.ruff.lint]
-select = [
-    # flake8-2020
-    "YTT",
-    # flake8-bandit
-    "S",
-    # flake8-bugbear
-    "B",
-    # flake8-builtins
-    "A",
-    # flake8-comprehensions
-    "C4",
-    # flake8-debugger
-    "T10",
-    # flake8-simplify
-    "SIM",
-    # isort
-    "I",
-    # mccabe
-    "C90",
-    # pycodestyle
-    "E", "W",
-    # pyflakes
-    "F",
-    # pygrep-hooks
-    "PGH",
-    # pyupgrade
-    "UP",
-    # ruff
-    "RUF",
-    # tryceratops
-    "TRY",
-]
-ignore = [
-    # LineTooLong
-    "E501",
-    # DoNotAssignLambda
-    "E731",
-    # Mutable class attributes (noise on Django Meta: ordering/indexes)
-    "RUF012",
-    # Avoid long messages outside the exception class
-    "TRY003",
+extend-ignore = [
     # Use of mark_safe (attribution HTML is escaped via the template layer)
     "S308",
     # Standard pseudo-random generators
     "S311",
-    # Class attribute shadowing a builtin (Django field names)
-    "A003",
     # Star imports
     "F403",
     "F405",
-    # Function too complex
-    "C901",
 ]
 
 [tool.ruff.lint.per-file-ignores]
