@@ -10,14 +10,14 @@ licensing and attribution matter. See `CONTEXT.md` for the ubiquitous language.
 
 ## Stack & commands
 
-- **Stack:** Python ≥3.11 / Django 5.2 LTS + 6.0 (family standard — supported releases only),
-  Poetry-managed. Dev toolchain via the `mvp-shared` bundle. Ships to PyPI.
-- **Install:** `poetry install`
-- **Test:** `poetry run pytest` (pytest-django; settings module `tests.settings`)
-- **Lint/format:** `poetry run pre-commit run --all-files` (ruff lint + ruff-format; local mypy + deptry hooks)
-- **Type-check:** `poetry run mypy licensing/`
-- **Build:** `poetry build`
-- **All checks (as CI runs):** `poetry run invoke check`
+- **Stack:** Python ≥3.11 / Django 5.2 LTS + 6.0 + 6.1 (family standard — supported releases only),
+  uv-managed. Dev toolchain via the `mvp-shared` bundle. Ships to PyPI.
+- **Install:** `uv sync`
+- **Test:** `uv run pytest` (pytest-django; settings module `tests.settings`)
+- **Lint/format:** `uv run pre-commit run --all-files` (ruff lint + ruff-format; local mypy + deptry hooks)
+- **Type-check:** `uv run mypy licensing/`
+- **Build:** `uv build`
+- **All checks (as CI runs):** `uv run invoke check`
 
 ## Agent skills
 
@@ -39,7 +39,7 @@ See `docs/agents/domain.md`.
 
 CI delegates to the `django-mvp/shared` reusable workflows (`tests.yml`, `build.yml`).
 Required status checks (exact names): `Code Quality`, `Security Scan`, `Build Package`, plus
-the test matrix `Test Python <py>, Django <dj>` (Python 3.12–3.13 × Django 5.2/6.0). See the
+the test matrix `Test Python <py>, Django <dj>` (Python 3.12–3.13 × Django 5.2/6.0/6.1). See the
 org's CI audit record in the registry.
 
 ## Engineering org
