@@ -226,10 +226,10 @@ The suite is written as Django `TestCase` classes and run with pytest (pytest-dj
 
 ```bash
 # Run with pytest (settings module: tests.settings)
-poetry run pytest
+uv run pytest
 
 # Run with coverage
-poetry run pytest --cov=licensing --cov-report=html
+uv run pytest --cov=licensing --cov-report=html
 ```
 
 ### Test Organization
@@ -377,14 +377,13 @@ git clone https://github.com/SamuelJennings/django-content-license.git
 cd django-content-license
 
 # Install dependencies
-poetry install
+uv sync
 
 # Run tests
-poetry run pytest
+uv run pytest
 
 # Run linting
-poetry run black .
-poetry run pylint licensing/
+uv run pre-commit run --all-files
 ```
 
 ### Code Quality

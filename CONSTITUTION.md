@@ -147,7 +147,7 @@ may break with notice).
 ### Article XII — Compatibility matrix
 Supported Python/Django versions are whatever the CI matrix declares — the matrix is
 authoritative. Policy: track only actively-supported Django releases (family rule). Current
-matrix: **Django 5.2 LTS + 6.0**, Python **3.11–3.13** (package floor `>=3.11`; CI test
+matrix: **Django 5.2 LTS + 6.0 + 6.1**, Python **3.11–3.13** (package floor `>=3.11`; CI test
 matrix Python 3.12–3.13 per the shared workflow default). New code must pass the full matrix;
 dropping a version is a constitution-level change recorded in CHANGELOG.
 

@@ -6,43 +6,40 @@ This document explains how to set up your development environment and run the pr
 
 1. **Install dependencies:**
    ```bash
-   poetry install
-   poetry run pre-commit install
+   uv sync
+   uv run pre-commit install
    ```
 
-2. **Activate the shell:**
-   ```bash
-   poetry shell
-   ```
+   `uv run <command>` runs a command in the project environment, so there is no shell to activate.
 
 ## Development Commands
 
 ### Code Quality & Formatting
 
 ```bash
-# Format code and update dependency files
-poetry run invoke fmt
+# Format code and check the lockfile
+uv run invoke fmt
 
 # Run all quality checks (what CI runs)
-poetry run invoke check
+uv run invoke check
 
 # Run individual tools
-poetry run pre-commit run --all-files    # Code style and linting
-poetry run mypy licensing/               # Type checking
-poetry run deptry .                      # Dependency analysis
+uv run pre-commit run --all-files    # Code style and linting
+uv run mypy licensing/               # Type checking
+uv run deptry .                      # Dependency analysis
 ```
 
 ### Testing
 
 ```bash
 # Run tests
-python manage.py test
+uv run pytest
 
 # Run tests with coverage
-poetry run invoke test
+uv run invoke test
 
 # Run tests with tox (multiple environments)
-poetry run invoke test --tox
+uv run invoke test --tox
 ```
 
 ### Manual Pre-commit Hook Updates
@@ -50,8 +47,8 @@ poetry run invoke test --tox
 The CI skips certain hooks that modify files. Run these manually when needed:
 
 ```bash
-# Update poetry.lock
-poetry run pre-commit run --hook-stage manual --all-files
+# Refresh uv.lock after editing pyproject.toml
+uv lock
 ```
 
 ## Pre-commit Hooks
@@ -59,17 +56,17 @@ poetry run pre-commit run --hook-stage manual --all-files
 We use pre-commit hooks to maintain code quality:
 
 - **Automatic on commit**: Basic formatting and linting (ruff, black, pyupgrade), plus local mypy + deptry
-- **Manual**: Poetry lock file updates (`poetry-lock`)
+- **Lockfile**: `uv-lock` keeps `uv.lock` in step with `pyproject.toml`
 - **CI checks**: All hooks except file-modifying and local-env ones
 
 ## Troubleshooting
 
-### "poetry-lock failed" in CI
+### "uv-lock failed" or "uv sync --locked" failed in CI
 
-This happens when your `poetry.lock` file is out of sync. Run locally:
+This happens when your `uv.lock` file is out of sync. Run locally:
 ```bash
-poetry run pre-commit run --hook-stage manual --all-files
-git add poetry.lock
+uv lock
+git add uv.lock
 git commit -m "Update dependency files"
 ```
 
@@ -77,7 +74,7 @@ git commit -m "Update dependency files"
 
 If you see pre-commit failures in CI, run locally:
 ```bash
-poetry run pre-commit run --all-files
+uv run pre-commit run --all-files
 git add .
 git commit -m "Apply pre-commit fixes"
 ```
@@ -86,13 +83,13 @@ git commit -m "Apply pre-commit fixes"
 
 ```bash
 # Bump version and create release
-poetry run invoke release patch   # for bug fixes
-poetry run invoke release minor   # for new features
-poetry run invoke release major   # for breaking changes
+uv run invoke release patch   # for bug fixes
+uv run invoke release minor   # for new features
+uv run invoke release major   # for breaking changes
 ```
 
 This will:
-1. Update the version in `pyproject.toml`
+1. Update the version in `pyproject.toml` and `uv.lock`
 2. Create a git tag
 3. Push to GitHub
 4. Trigger automatic PyPI publishing

@@ -47,7 +47,7 @@ If you are proposing a feature:
 ## Get Started!
 
 >[!Note]
-> This package uses Poetry for dependency management and packaging. If you are unfamiliar with Poetry, please see the [Poetry documentation](https://python-poetry.org/docs/) and install the package before continuing.
+> This package uses uv for dependency management. If you are unfamiliar with uv, please see the [uv documentation](https://docs.astral.sh/uv/) and install it before continuing.
 
 Ready to contribute? Here's how to set up `django-content-license` for local development.
 
@@ -56,10 +56,9 @@ Ready to contribute? Here's how to set up `django-content-license` for local dev
 
     $ git clone git@github.com:your_name_here/django-content-license.git
 
-3. Install dev environment using poetry and activate it:
+3. Install the dev environment with uv:
 
-    $ poetry install
-    $ poetry shell
+    $ uv sync
 
 4. Create a branch for local development::
 
@@ -70,9 +69,9 @@ Ready to contribute? Here's how to set up `django-content-license` for local dev
 5. Write tests for any code changes where applicable.
 
 > [!Note]
-> This package provides some helpful utility scripts via the `invoke` package that help with code quality and testing. Invoke is installed with the dev dependencies, so you should be able to run the following commands from the root of the project when you are in the virtual environment. To see what commands are available to you, run:
+> This package provides some helpful utility scripts via the `invoke` package that help with code quality and testing. Invoke is installed with the dev dependencies, so you should be able to run the following commands from the root of the project with `uv run`. To see what commands are available to you, run:
 
-    $ invoke --list
+    $ uv run invoke --list
 
 6. When you're done making changes, check that your changes pass all code quality checks.
 
