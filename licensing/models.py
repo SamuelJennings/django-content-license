@@ -1,3 +1,5 @@
+"""The License model."""
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.text import slugify
@@ -5,6 +7,8 @@ from django.utils.translation import gettext_lazy as _
 
 
 class License(models.Model):
+    """A content license that model instances can be published under."""
+
     name = models.CharField(
         _("name"), help_text=_("The name of the license"), max_length=255, unique=True
     )
@@ -53,19 +57,21 @@ class License(models.Model):
         ]
 
     def __str__(self):
+        """Return the license name."""
         return self.name
 
     def __repr__(self):
+        """Return the license name in angle brackets."""
         return f"<License: {self.name}>"
 
     @property
     def full_name(self):
-        """Return full license name"""
+        """Return the full license name."""
         return self.name
 
     @property
     def short_description(self):
-        """Truncated description for admin list display"""
+        """Return the description cut to 100 characters, or a placeholder when empty."""
         if self.description:
             return (
                 (self.description[:100] + "...")
@@ -76,16 +82,15 @@ class License(models.Model):
 
     @property
     def status_display(self):
-        """Human-readable status for admin"""
+        """Return "Active" or "Deprecated" for display."""
         if not self.is_active:
             return _("Deprecated")
         return _("Active")
 
     def clean(self):
-        """Validate the model fields."""
+        """Require a deprecated date on inactive licenses, and none on active ones."""
         super().clean()
 
-        # Validate that deprecated licenses have a deprecated_date
         if not self.is_active and not self.deprecated_date:
             raise ValidationError(
                 {
@@ -95,7 +100,6 @@ class License(models.Model):
                 }
             )
 
-        # Validate that active licenses don't have a deprecated_date
         if self.is_active and self.deprecated_date:
             raise ValidationError(
                 {
@@ -107,19 +111,16 @@ class License(models.Model):
 
     @classmethod
     def get_recommended_licenses(cls):
-        """Get currently recommended licenses"""
+        """Return the active licenses, ordered by name."""
         return cls.objects.filter(is_active=True).order_by("name")
 
     def save(self, *args, **kwargs):
-        # Auto-generate slug if not provided
+        """Derive a unique slug from the name when none is set."""
         if not self.slug:
             base_slug = slugify(self.name)
-            if (
-                not base_slug
-            ):  # Handle edge case where name doesn't generate a valid slug
+            if not base_slug:
                 base_slug = "license"
 
-            # Ensure unique slug with optimized query
             slug = base_slug
             counter = 1
             queryset = License.objects.filter(slug__startswith=base_slug)

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+"""Django command-line utility for the example project."""
 
 import os
 import sys

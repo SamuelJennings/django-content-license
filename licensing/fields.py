@@ -1,3 +1,5 @@
+"""The LicenseField model field."""
+
 from functools import partialmethod
 
 from django.db import models
@@ -7,7 +9,12 @@ from .utils import html_snippet
 
 
 class LicenseField(models.ForeignKey):
-    """A custom foreign key field pointing to the License model"""
+    """A foreign key to `License` that adds an attribution method to its model.
+
+    Declaring `license = LicenseField()` on a model adds `get_license_display()`, which
+    renders the attribution snippet for the instance. Keyword arguments are passed to
+    `ForeignKey`; `to` is always `licensing.License`, and `on_delete` defaults to `PROTECT`.
+    """
 
     def __init__(self, *args, **kwargs):
         kwargs["to"] = "licensing.License"
@@ -19,6 +26,7 @@ class LicenseField(models.ForeignKey):
         super().__init__(*args, **kwargs)
 
     def contribute_to_class(self, cls, name, **kwargs):
+        """Add `get_<name>_display()` to the model unless it defines its own."""
         super().contribute_to_class(cls, name, **kwargs)
         method_name = f"get_{self.name}_display"
         if method_name not in cls.__dict__:
