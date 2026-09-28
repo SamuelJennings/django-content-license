@@ -1,3 +1,5 @@
+"""URLs for the example project."""
+
 from django.urls import path
 from django.views.generic import DetailView, TemplateView
 

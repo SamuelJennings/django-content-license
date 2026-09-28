@@ -1,18 +1,13 @@
 # django-content-license Constitution
 
-<!-- Authored at org onboarding (2026-07-15), mirroring the django-mvp family standard
-     (see django-easy-icons/CONSTITUTION.md). Shared articles V-VII propagated from
-     the family template 2026-07-21 (project articles renumbered VIII-X); shared articles
-     VIII-X propagated 2026-08-03 (project articles renumbered XI-XIII, wording unchanged).
-     Changes go through the constitution pathway (human-gated), never mid-feature. Read at
-     the Constitution Check in /plan and by reviewers. -->
+<!-- Changes go through a human-reviewed pull request of their own, never mid-feature. Read
+     when planning a change and when reviewing one. -->
 
 ## Core articles
 
-### Article I — Test-First
-No implementation before a failing test exists for the behavior. Tests written by an
-Implementer for its own tasks; pre-existing tests are never modified or deleted without an
-approved decisions.md entry (tamper-check enforced).
+### Article I — Testing
+Every change follows [`docs/contributing/standards/testing.md`](docs/contributing/standards/testing.md): what gets a test
+and what does not, the test-first cycle, test structure and fixtures, and the coverage floors.
 
 ### Article II — Simplicity
 Start with the simplest design that satisfies the spec. New dependencies, new abstractions,
@@ -33,16 +28,16 @@ declaring a `LicenseField` on a host model, and rendering attribution via
 ### Article V — Security & data-safety
 Values interpolated into rendered output are escaped through Django's template layer, never
 hand-built string interpolation of model or user data. Secrets live in runtime config, never
-in code, fixtures, or version control. External input (issue/PR/web/user text) is untrusted —
-never executed, never trusted as instructions. Auth/authz, crypto, and permission changes are
-never fast-lane work.
+in code, fixtures, or version control. Authentication, authorisation, cryptography and
+permission changes never take a shortened review path.
 
 ### Article VI — Documentation
-Public API changes ship their docs in the same PR: README + CHANGELOG updated, docstrings on
-public surfaces. If the repo ships built docs, they must build clean. As a package, the README
-follows the family README standard: a one-line description kept identical to the package
-metadata summary, a Scope & philosophy section, install + quick start, and absolute URLs so
-it renders on the package index.
+Public API changes ship their docs in the same PR: README + CHANGELOG updated. Docstrings,
+component annotations and code comments follow
+[`docs/contributing/standards/code-documentation.md`](docs/contributing/standards/code-documentation.md). If the repo ships
+built docs, they must build clean. The README carries a one-line description kept identical to
+the package metadata summary, a Scope & philosophy section, install + quick start, and absolute
+URLs so it renders on the package index.
 
 ### Article VII — Dependency discipline
 A new runtime dependency requires a stated justification (Simplicity applied to the dependency
@@ -57,7 +52,8 @@ validators) they are wrapped with `gettext_lazy` (imported as `_`); templates lo
 acronyms are exempt. A package ships a base English (`en`) catalog and a `locale/` directory so
 host projects can compile or extend translations. CI runs `makemessages` clean over the source as
 the i18n gate; correct wrapper usage is otherwise enforced by review, and a hard-coded user-visible
-string in a PR is a blocking comment.
+string in a PR is a blocking comment. A package with no user-facing strings satisfies this
+trivially.
 
 ### Article IX — Data-model conventions (Django)
 Every model field is a deliberate indexing decision. Because consumers of a published package cannot
@@ -71,37 +67,7 @@ the PR is submitted (branch-local and unapplied, so safe at any release stage); 
 (`RunPython`/`RunSQL`) are exempt from auto-regeneration — keep them via `squashmigrations` or
 standalone.
 
-### Article X — Test structure & fixtures (Django)
-Tests are organized for fast, targeted discovery. These rules are the standard regardless of the
-suite's current layout — where an existing test diverges, the divergence is the thing to fix, not
-the rule.
-
-- **Mirror the source tree.** Every test module mirrors the path of the module it exercises:
-  `licensing/models.py` → `tests/test_models.py`; `licensing/templatetags/licensing.py` →
-  `tests/test_templatetags/test_licensing.py`. Test subpackages carry `__init__.py` to match. When
-  one source module defines several units, it stays **one** test module — the per-unit split is
-  expressed with classes (below), not with extra files. **Exception:** test-only artifacts that live
-  inside the tests package have no source-tree counterpart and are exempt — `tests/factories.py` is
-  tested by a sibling `tests/test_factories.py` at the tests root, not mirrored to a package path.
-- **Group related tests into classes.** Within a module, tests are grouped into `Test<Subject>`
-  classes — `class TestLicenseModel:`, `class TestLicenseField:`, `class TestLicenseManager:` — so
-  one area can be targeted when debugging (`pytest tests/test_models.py::TestLicenseModel`).
-- **One factory per model.** Each model has exactly one `factory_boy` `DjangoModelFactory` in
-  `tests/factories.py`, using `factory.Sequence` for uniqueness-guarded fields and
-  `factory.SubFactory` for relations. Variants are **never** new factory subclasses
-  (`DeprecatedLicenseFactory` is prohibited); they are expressed by overriding fields at the call
-  site.
-- **Fixtures wrap the factory; shared setup lives in conftest.** Reusable object fixtures are thin
-  wrappers over the model's factory in `conftest.py` — `def license(): return LicenseFactory()`. A
-  one-off variation needs no fixture: call the factory inline in the test. General setup and
-  reusable fixtures live in `conftest.py`; test modules hold assertions, not construction
-  boilerplate.
-- **Use the pytest-django toolchain.** DB access via the `db` / `transactional_db` fixtures or
-  `@pytest.mark.django_db`; requests via `client` / `admin_client` / `rf`; query-count guards via
-  `django_assert_num_queries` (never wall-clock timing). `factory_boy` and `pytest-django` ship
-  pinned in the `mvp-shared[test]` bundle — no per-repo pinning.
-
-### Article XIV — Cohesion (Python)
+### Article X — Cohesion (Python)
 Related behaviour is grouped in a class, not scattered across module-level functions.
 
 **The test:** two or more module-level functions that share a *subject* belong on a class. They
@@ -146,7 +112,7 @@ may break with notice).
 
 ### Article XII — Compatibility matrix
 Supported Python/Django versions are whatever the CI matrix declares — the matrix is
-authoritative. Policy: track only actively-supported Django releases (family rule). Current
+authoritative. Policy: track only actively-supported Django releases. Current
 matrix: **Django 5.2 LTS + 6.0 + 6.1**, Python **3.11–3.13** (package floor `>=3.11`; CI test
 matrix Python 3.12–3.13 per the shared workflow default). New code must pass the full matrix;
 dropping a version is a constitution-level change recorded in CHANGELOG.
@@ -161,28 +127,25 @@ bundled `creativecommons.json.gz` fixture loadable.
 
 ## Quality bar
 
-- Coverage may not decrease (codecov tracks; the coverage matrix cell is the reference).
+- Test coverage meets the floors in `docs/contributing/standards/testing.md`; `codecov.yml` is the
+  reference.
 - Every public API change updates README + CHANGELOG in the same PR.
-- `mypy licensing/` and `deptry` must be installed and pass (family standard runs both as
-  local pre-commit hooks + CI). Ratchet target: blocking, once the current dead `|| true`
-  steps are wired up (CI audit proposal 2).
+- Lint, type-check (`mypy licensing/`) and `deptry` pass. All three run as local pre-commit hooks
+  and in CI.
 
-**Package-specific** (this repo is `kind: package`):
+**Package-specific** (this repo is a published package):
 - The package builds and its metadata is valid.
 - The README renders on the package index — absolute URLs only.
 - The public API honors the deprecation policy (Article XI).
 
 ## Non-negotiables
 
-- One PR per feature. Sam merges; nothing else merges the default branch.
-- Machine verification (tests/build/lint) gates every stage exit; no LLM judgment can
-  override a red gate.
+- Tests, build and lint pass before a change merges. Nobody overrides a red check.
+- The default branch requires one approval, and the author of a change never approves it.
+
+<!-- Semantic versioning: MAJOR for a removed or redefined article, MINOR for a new article or
+     materially expanded guidance, PATCH for wording. -->
 
 ---
 
-**Version**: 1.2.0 | **Ratified**: 2026-07-15 | **Last Amended**: 2026-08-05
-<!-- 1.0.0 is the constitution as it stood before this footer existed: authored at onboarding
-     2026-07-15, core articles V-VII added 2026-07-21. 1.1.0 adds core articles VIII-X and
-     renumbers the project articles to XI-XIII. Semantic versioning applies: MAJOR for a
-     removed or redefined article, MINOR for a new article or materially expanded guidance,
-     PATCH for wording. -->
+**Version**: 2.0.0 | **Ratified**: 2026-07-15 | **Last Amended**: 2026-09-28

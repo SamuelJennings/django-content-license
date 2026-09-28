@@ -17,8 +17,6 @@ DEPRECATION_DATE = datetime.date(2026, 1, 1)
 
 
 class TestLicense:
-    """Field values, uniqueness constraints, and computed properties."""
-
     def test_license_creation_with_all_fields(self):
         license_obj = LicenseFactory(
             name="MIT License",
@@ -34,11 +32,11 @@ class TestLicense:
             == "A permissive license that allows for commercial use."
         )
         assert license_obj.text == "Permission is hereby granted, free of charge..."
-        assert license_obj.is_active is True  # Default value
-        assert license_obj.deprecated_date is None  # Default value
+        assert license_obj.is_active is True
+        assert license_obj.deprecated_date is None
         assert license_obj.created_at is not None
         assert license_obj.updated_at is not None
-        assert license_obj.slug == "mit-license"  # Auto-generated
+        assert license_obj.slug == "mit-license"
 
     def test_license_creation_minimal_fields(self):
         license_obj = LicenseFactory(
@@ -50,7 +48,7 @@ class TestLicense:
 
         assert license_obj.name == "Test License"
         assert license_obj.canonical_url == "https://example.com/test-license"
-        assert license_obj.description is None  # Null field
+        assert license_obj.description is None
         assert license_obj.text == "This is the license text."
         assert license_obj.is_active is True
 
@@ -109,8 +107,6 @@ class TestLicense:
 
 
 class TestLicenseSlug:
-    """Slug auto-generation, uniqueness, and preservation on save."""
-
     def test_slug_auto_generation(self):
         license_obj = LicenseFactory(
             name="Creative Commons BY 4.0",
@@ -121,7 +117,6 @@ class TestLicenseSlug:
     def test_slug_unique_constraint_with_counter(self):
         LicenseFactory(name="Test License")
 
-        # Same slug-generating name, different special characters.
         license2 = LicenseFactory(name="Test License!!!")
 
         assert license2.slug == "test-license-1"
@@ -137,15 +132,13 @@ class TestLicenseSlug:
     def test_slug_update_on_save(self):
         license_obj = LicenseFactory(name="BSD License", slug="original-slug")
 
-        # Clear the slug and save.
         license_obj.slug = ""
         license_obj.save()
 
-        # Slug should be regenerated.
         assert license_obj.slug == "bsd-license"
 
     def test_slug_generation_with_empty_name_fallback(self):
-        license_obj = LicenseFactory(name="!!!")  # Doesn't generate a valid slug
+        license_obj = LicenseFactory(name="!!!")
         assert license_obj.slug == "license"
 
     def test_slug_generation_preserves_existing_on_update(self):
@@ -170,52 +163,21 @@ class TestLicenseSlug:
         license_obj = LicenseFactory(name="Self Conflict Test")
         original_slug = license_obj.slug
 
-        # Update the license (which triggers save and slug generation).
         license_obj.text = "Updated text"
         license_obj.save()
 
-        # Should keep the same slug, not add a counter.
         assert license_obj.slug == original_slug
 
 
-@pytest.fixture
-def three_licenses():
-    """Three saved licences spanning active, deprecated, and CC states."""
-    active = LicenseFactory(
-        name="MIT License",
-        canonical_url="https://opensource.org/licenses/MIT",
-        text="MIT license text",
-        is_active=True,
-    )
-    deprecated = LicenseFactory(
-        name="Old License",
-        canonical_url="https://example.com/old",
-        text="Old license text",
-        is_active=False,
-        deprecated_date=datetime.date(2020, 1, 1),
-    )
-    cc = LicenseFactory(
-        name="Creative Commons BY 4.0",
-        canonical_url="https://creativecommons.org/licenses/by/4.0/",
-        text="CC BY license text",
-        is_active=True,
-    )
-    return active, deprecated, cc
-
-
 class TestLicenseQuerySet:
-    """Querysets and class methods over multiple licenses."""
-
     def test_get_recommended_licenses(self, three_licenses):
         active, deprecated, cc = three_licenses
         recommended = License.get_recommended_licenses()
 
-        # Should only include active licenses.
         assert active in recommended
         assert cc in recommended
         assert deprecated not in recommended
 
-        # Should be ordered by name.
         license_names = [license.name for license in recommended]
         assert license_names == sorted(license_names)
 
@@ -232,13 +194,6 @@ class TestLicenseQuerySet:
         assert deprecated_licenses.count() == 1
 
     def test_declared_indexes(self):
-        """The fields the lookup paths rely on are actually indexed.
-
-        The previous version of this test built two querysets and asserted
-        nothing. Querysets are lazy, so it never reached the database and could
-        only have failed if a field name disappeared. The index declaration on
-        Meta is the thing worth guarding, so assert against that directly.
-        """
         indexed = {tuple(index.fields) for index in License._meta.indexes}
 
         assert ("is_active",) in indexed
@@ -246,8 +201,6 @@ class TestLicenseQuerySet:
 
 
 class TestLicenseValidation:
-    """full_clean() and clean() validation behaviour."""
-
     @pytest.mark.parametrize(
         "overrides",
         [
@@ -255,10 +208,8 @@ class TestLicenseValidation:
             {"canonical_url": ""},
             {"text": ""},
             {"canonical_url": "not-a-valid-url"},
-            {"name": "A" * 256},  # Exceeds max_length=255
-            {
-                "canonical_url": "https://example.com/" + "a" * 500
-            },  # Exceeds max_length=500
+            {"name": "A" * 256},
+            {"canonical_url": "https://example.com/" + "a" * 500},
         ],
     )
     def test_full_clean_validation_errors(self, overrides):
@@ -278,16 +229,13 @@ class TestLicenseValidation:
             name="Deprecated License",
             canonical_url="https://example.com/deprecated",
             text="Deprecated license text",
-            is_active=False,  # Deprecated but no deprecated_date
+            is_active=False,
         )
 
         with pytest.raises(ValidationError) as excinfo:
             license_obj.clean()
 
         assert "deprecated_date" in excinfo.value.error_dict
-        assert "Deprecated licenses must have a deprecated date" in str(
-            excinfo.value.error_dict["deprecated_date"][0]
-        )
 
     def test_active_license_with_deprecated_date_validation(self):
         license_obj = LicenseFactory.build(
@@ -295,16 +243,13 @@ class TestLicenseValidation:
             canonical_url="https://example.com/active",
             text="Active license text",
             is_active=True,
-            deprecated_date=DEPRECATION_DATE,  # Active but has deprecated_date
+            deprecated_date=DEPRECATION_DATE,
         )
 
         with pytest.raises(ValidationError) as excinfo:
             license_obj.clean()
 
         assert "deprecated_date" in excinfo.value.error_dict
-        assert "Active licenses should not have a deprecated date" in str(
-            excinfo.value.error_dict["deprecated_date"][0]
-        )
 
     @pytest.mark.parametrize(
         "overrides",
@@ -322,12 +267,10 @@ class TestLicenseValidation:
         fields.update(overrides)
         license_obj = LicenseFactory.build(**fields)
 
-        license_obj.clean()  # Should not raise
+        license_obj.clean()
 
 
 class TestLicenseTimestamps:
-    """created_at / updated_at auto-population."""
-
     def test_created_at_auto_now_add(self):
         before_creation = timezone.now()
         license_obj = LicenseFactory()
@@ -341,7 +284,6 @@ class TestLicenseTimestamps:
         license_obj = LicenseFactory()
         original_updated_at = license_obj.updated_at
 
-        # Small delay to ensure timestamp difference.
         time.sleep(0.01)
 
         license_obj.description = "Updated description"

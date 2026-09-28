@@ -17,14 +17,7 @@ This document explains how to set up your development environment and run the pr
 ### Code Quality & Formatting
 
 ```bash
-# Format code and check the lockfile
-uv run invoke fmt
-
-# Run all quality checks (what CI runs)
-uv run invoke check
-
-# Run individual tools
-uv run pre-commit run --all-files    # Code style and linting
+uv run pre-commit run --all-files    # Code style, linting, type checking and dependency analysis
 uv run mypy licensing/               # Type checking
 uv run deptry .                      # Dependency analysis
 ```
@@ -37,10 +30,10 @@ uv run pytest
 
 # Run tests with coverage
 uv run invoke test
-
-# Run tests with tox (multiple environments)
-uv run invoke test --tox
 ```
+
+Tests follow [the testing standards](docs/contributing/standards/testing.md), and docstrings and
+comments follow [the code documentation standards](docs/contributing/standards/code-documentation.md).
 
 ### Manual Pre-commit Hook Updates
 
@@ -55,7 +48,7 @@ uv lock
 
 We use pre-commit hooks to maintain code quality:
 
-- **Automatic on commit**: Basic formatting and linting (ruff, black, pyupgrade), plus local mypy + deptry
+- **Automatic on commit**: Formatting and linting (ruff), plus local mypy + deptry
 - **Lockfile**: `uv-lock` keeps `uv.lock` in step with `pyproject.toml`
 - **CI checks**: All hooks except file-modifying and local-env ones
 
@@ -83,9 +76,9 @@ git commit -m "Apply pre-commit fixes"
 
 ```bash
 # Bump version and create release
-uv run invoke release patch   # for bug fixes
-uv run invoke release minor   # for new features
-uv run invoke release major   # for breaking changes
+uv run invoke release --rule=patch   # for bug fixes
+uv run invoke release --rule=minor   # for new features
+uv run invoke release --rule=major   # for breaking changes
 ```
 
 This will:

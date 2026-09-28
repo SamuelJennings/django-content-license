@@ -1,6 +1,4 @@
-"""
-Utility functions for django-content-license package.
-"""
+"""Attribution helpers and license-field validation."""
 
 import logging
 
@@ -16,7 +14,12 @@ class LicenseFieldError(Exception):
 
 
 class LicenseFieldNotFoundError(LicenseFieldError):
-    """Raised when a license field is not found on a model."""
+    """Raised when a license field is not found on a model.
+
+    Args:
+        model_name: Name of the model that was searched.
+        field_name: Name of the field that was not found.
+    """
 
     def __init__(self, model_name, field_name):
         super().__init__(f"Model {model_name} has no field '{field_name}'")
@@ -25,7 +28,12 @@ class LicenseFieldNotFoundError(LicenseFieldError):
 
 
 class InvalidLicenseFieldError(LicenseFieldError):
-    """Raised when a field is not a valid license field."""
+    """Raised when a field is not a valid license field.
+
+    Args:
+        field_name: Name of the rejected field.
+        reason: Why the field is not a license field.
+    """
 
     def __init__(self, field_name, reason):
         super().__init__(f"Field '{field_name}' is not a valid license field: {reason}")
@@ -34,18 +42,15 @@ class InvalidLicenseFieldError(LicenseFieldError):
 
 
 def get_license_attribution(model_instance):
-    """
-    Get attribution information for a model instance.
+    """Return attribution information for a model instance.
 
     Args:
-        model_instance: Django model instance
+        model_instance: The instance being attributed.
 
     Returns:
-        dict: Attribution information with keys:
-            - title: String representation of the instance
-            - link: URL to the instance (if available)
-            - creators: Creator information or "Unknown"
-            - creators_link: URL to the creators (if available)
+        A dict with `title` (the instance as a string), `link` (its URL, or None),
+        `creators` (its `creators`, or "Unknown") and `creators_link` (the creators'
+        URL, or None). Any error while reading the instance yields the fallback values.
     """
     try:
         attr = {
@@ -55,14 +60,12 @@ def get_license_attribution(model_instance):
             "creators_link": None,
         }
 
-        # Try to get creators link if creators exist
         if hasattr(model_instance, "creators") and model_instance.creators:
             try:
                 creators_link = getattr(
                     model_instance.creators, "get_absolute_url", lambda: None
                 )()
             except AttributeError:
-                # Creator has no URL - this is fine, just leave creators_link as None
                 creators_link = None
             else:
                 attr["creators_link"] = creators_link
@@ -85,28 +88,27 @@ def get_license_attribution(model_instance):
 
 
 def get_license_creator(model_instance):
-    """
-    Get the creator of a model instance.
+    """Return the creator of a model instance.
 
     Args:
-        model_instance: Django model instance
+        model_instance: The instance to read `creator` from.
 
     Returns:
-        Creator object or None if no creator attribute exists
+        The instance's `creator`, or None when it has none.
     """
     return getattr(model_instance, "creator", None)
 
 
 def html_snippet(model_instance, field_name):
-    """
-    Generate HTML snippet for license attribution.
+    """Render the attribution snippet for a model instance.
 
     Args:
-        model_instance: Django model instance
-        field_name: Name of the license field
+        model_instance: The instance being attributed.
+        field_name: Name of its license field.
 
     Returns:
-        str: HTML snippet for license attribution or empty string if error/no license
+        The rendered `licensing/snippet.html`, or an empty string when the instance has
+        no license or rendering fails.
     """
     try:
         license_obj = getattr(model_instance, field_name, None)
@@ -123,15 +125,14 @@ def html_snippet(model_instance, field_name):
 
 
 def get_attribution_context(model_instance, license_obj):
-    """
-    Get context dictionary for license attribution template.
+    """Return the template context for rendering an attribution.
 
     Args:
-        model_instance: Django model instance
-        license_obj: License instance
+        model_instance: The instance being attributed.
+        license_obj: The license it is published under.
 
     Returns:
-        dict: Context for template rendering
+        A dict with `object`, `license` and `attribution` (see `get_license_attribution`).
     """
     attribution = get_license_attribution(model_instance)
     return {
@@ -142,19 +143,18 @@ def get_attribution_context(model_instance, license_obj):
 
 
 def validate_license_field_name(model_class, field_name):
-    """
-    Validate that a field name exists on a model and is a license field.
+    """Check that a field exists on a model and is a license field.
 
     Args:
-        model_class: Django model class
-        field_name: Name of the field to validate
+        model_class: The model class to inspect.
+        field_name: Name of the field to check.
 
     Returns:
-        bool: True if field exists and is valid
+        True when the field is a foreign key to `License`, False when it points elsewhere.
 
     Raises:
-        LicenseFieldNotFoundError: If field doesn't exist
-        InvalidLicenseFieldError: If field is not a license field
+        LicenseFieldNotFoundError: The model has no such field.
+        InvalidLicenseFieldError: The field is not a foreign key.
     """
     if not hasattr(model_class, field_name):
         raise LicenseFieldNotFoundError(model_class.__name__, field_name)

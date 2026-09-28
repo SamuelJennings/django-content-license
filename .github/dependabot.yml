@@ -1,23 +1,8 @@
-# Family Dependabot configuration — materialized into each repo at onboarding.
-#
-# The load-bearing choice is the grouping: one group per ecosystem matching "*",
-# so a cycle's updates arrive as a SINGLE pull request. That is what makes
-# auto-merge-dependabot.yml viable — one PR, one set of checks, merged when they
-# pass. Partial grouping (a "django*" group, a "dev tools" group, everything else
-# loose) opens a PR per package instead, and they accumulate faster than anyone
-# merges them. FAIR-DM/fairdm reached thirteen open before onboarding.
-#
-# `reviewers:` is deliberately absent. GitHub removed that option on 2025-08-08
-# (announced 2025-04-29) because it overlapped with code owners; repos still
-# carrying it are being silently ignored. Use a CODEOWNERS file if review
-# assignment is wanted.
-#
-# Add a `docker` ecosystem only where a Dockerfile exists. Dependabot's docker
-# ecosystem scans Dockerfiles and does NOT read docker-compose.yml, so a docker
-# block in a compose-only repo never produces anything.
+# One group per ecosystem, so each cycle's updates arrive as a single pull request
+# that auto-merge-dependabot.yml can merge on green. Review assignment comes from
+# CODEOWNERS; GitHub dropped the `reviewers:` option.
 version: 2
 updates:
-  # Python dependencies (uv.lock)
   - package-ecosystem: "uv"
     directory: "/"
     schedule:
@@ -31,10 +16,8 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
-    # mvp-shared is a git dependency pinned to a tag, and the same tag is
-    # pinned again in every workflow that calls django-mvp/shared. The two have
-    # to move together, which a Dependabot bump to pyproject.toml and uv.lock
-    # alone cannot do, so the tag is bumped by hand when a shared release lands.
+    # The mvp-shared tag is also pinned in the workflows, and Dependabot cannot
+    # move both together, so it is bumped by hand.
     ignore:
       - dependency-name: "mvp-shared"
     groups:
@@ -42,7 +25,6 @@ updates:
         patterns:
           - "*"
 
-  # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

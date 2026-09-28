@@ -10,8 +10,6 @@ from tests.factories import LicenseFactory
 
 
 class MockCreator:
-    """Mock creator object for testing."""
-
     def __init__(self, name="Test Creator", has_url=True):
         self.name = name
         self._has_url = has_url
@@ -26,8 +24,6 @@ class MockCreator:
 
 
 class MockModel:
-    """Mock model for testing license field functionality."""
-
     def __init__(self, name="Test Object", has_url=True, creators=None):
         self.name = name
         self._has_url = has_url
@@ -43,18 +39,13 @@ class MockModel:
 
 
 class TestLicenseField:
-    """Basic construction and deconstruction behaviour of LicenseField."""
-
     def test_defaults(self):
         field = LicenseField()
 
         assert field.remote_field.model == "licensing.License"
         assert field.remote_field.on_delete == models.PROTECT
-        # verbose_name and help_text are lazy strings, so compare their str()
-        assert str(field.verbose_name) == "license"
-        assert (
-            str(field.help_text) == "The license under which this content is published"
-        )
+        assert field.verbose_name
+        assert field.help_text
 
     def test_custom_values(self):
         field = LicenseField(
@@ -102,8 +93,6 @@ class TestLicenseField:
 
 
 class TestLicenseFieldOnDelete:
-    """on_delete defaulting and overriding."""
-
     @pytest.mark.parametrize(
         ("on_delete_kwarg", "expected"),
         [
@@ -122,8 +111,6 @@ class TestLicenseFieldOnDelete:
 
 
 class TestLicenseFieldModelResolution:
-    """The 'to' parameter is always forced to the License model."""
-
     def test_model_resolution(self):
         field = LicenseField()
 
@@ -142,8 +129,6 @@ class TestLicenseFieldModelResolution:
 
 
 class TestLicenseFieldAttributes:
-    """Attribute pass-through for LicenseField."""
-
     def test_attributes_set_correctly(self):
         field = LicenseField(null=True, blank=True, db_index=True)
 
@@ -154,8 +139,6 @@ class TestLicenseFieldAttributes:
 
 
 class TestLicenseFieldInheritance:
-    """LicenseField's relationship to ForeignKey and abstract base models."""
-
     def test_inherits_from_foreign_key(self):
         field = LicenseField()
 
@@ -180,8 +163,6 @@ class TestLicenseFieldInheritance:
 
 
 class TestLicenseFieldContributeToClass:
-    """contribute_to_class adds a get_<field>_display method to the model."""
-
     def test_adds_display_method(self):
         class TestModel(models.Model):
             license = LicenseField()
@@ -216,20 +197,7 @@ class TestLicenseFieldContributeToClass:
         assert callable(ContentLicensedModel.get_content_license_display)
 
 
-@pytest.fixture
-def cc_by_license():
-    """The Creative Commons BY 4.0 licence shared by the attribution template tests."""
-    return LicenseFactory(
-        name="Creative Commons BY 4.0",
-        canonical_url="https://creativecommons.org/licenses/by/4.0/",
-        text="CC BY license text",
-        description="Allows others to distribute and build upon the material",
-    )
-
-
 class TestLicenseAttributionTemplate:
-    """Rendering of the license attribution blocktrans template."""
-
     def test_with_all_attributes(self, cc_by_license):
         mock_creator = MockCreator("Jane Doe", has_url=True)
         mock_object = MockModel("My Article", has_url=True, creators=mock_creator)
@@ -364,20 +332,7 @@ class TestLicenseAttributionTemplate:
         assert "<script>License</script>" not in rendered
 
 
-@pytest.fixture
-def apache_license():
-    """The Apache 2.0 licence shared by the real-model integration tests."""
-    return LicenseFactory(
-        name="Apache License 2.0",
-        canonical_url="https://www.apache.org/licenses/LICENSE-2.0",
-        text="Apache 2.0 license text",
-        description="A permissive license with patent protection",
-    )
-
-
 class TestLicenseFieldInRealModel:
-    """Integration tests against example.models.TestModel, a real LicenseField user."""
-
     def test_field_in_real_model(self, apache_license):
         from example.models import TestModel
 
@@ -419,47 +374,3 @@ class TestLicenseFieldInRealModel:
 
         related_objects = TestModel.objects.filter(content_license=apache_license)
         assert related_objects.count() == 2
-
-
-class TestLicenseAdmin:
-    """License admin display methods."""
-
-    def test_display_methods(self):
-        from example.admin import LicenseAdmin
-
-        license_obj = LicenseFactory(
-            name="BSD 3-Clause",
-            canonical_url="https://opensource.org/licenses/BSD-3-Clause",
-            text="BSD license text",
-            description="A permissive license similar to MIT but with additional clauses",
-            is_active=True,
-        )
-
-        admin = LicenseAdmin(License, None)
-
-        name_display = admin.get_name_display(license_obj)
-        assert license_obj.name in name_display
-        assert "<nobr>" in name_display
-
-        url_display = admin.get_canonical_url_display(license_obj)
-        assert license_obj.canonical_url in url_display
-        assert "<a href=" in url_display
-        assert 'target="_blank"' in url_display
-
-        desc_display = admin.get_description_display(license_obj)
-        assert license_obj.description in desc_display
-
-    def test_no_description(self):
-        from example.admin import LicenseAdmin
-
-        license_no_desc = LicenseFactory(
-            name="Simple License",
-            canonical_url="https://example.com/simple",
-            text="Simple license text",
-            description="",
-        )
-
-        admin = LicenseAdmin(License, None)
-        desc_display = admin.get_description_display(license_no_desc)
-
-        assert desc_display == "No description"

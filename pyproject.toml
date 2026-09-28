@@ -19,18 +19,15 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
 ]
-# Only actively supported Django releases (family standard). 5.2 LTS + current
-# stable; dropping a version is a constitution-level change (CONSTITUTION.md).
+# Actively supported Django releases only (CONSTITUTION.md Article XII).
 dependencies = ["django>=5.2"]
 
 [project.urls]
 Homepage = "https://github.com/SamuelJennings/django-content-license"
 
 [dependency-groups]
-# Family toolchain bundle; the pin tag is the family-standard version. Ships
-# ruff, mypy, deptry, pre-commit, pytest, pytest-django, coverage, django-stubs.
-# python marker: the bundle needs >=3.12; the package floor stays 3.11 for
-# consumers (constitution Article XII) — dev tooling never ships to them.
+# The shared dev and test toolchain. It needs Python 3.12, while the package
+# itself supports 3.11 (Article XII); dev tooling never ships to consumers.
 dev = ["mvp-shared[dev,test]; python_version >= '3.12'"]
 
 [tool.uv.sources]
@@ -43,11 +40,8 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["licensing"]
 
-# Hatchling's default source distribution is the whole working tree: tests, the
-# example project, documentation and CI configuration. Listing what ships keeps
-# it to the package, the readme, the licence and the authors file. Hatchling
-# adds .gitignore itself, so that a build from the source distribution leaves
-# out what the repository does.
+# Hatchling's default sdist is the whole working tree; this keeps it to the
+# package, readme, licence and authors file (hatchling adds .gitignore itself).
 [tool.hatch.build.targets.sdist]
 include = ["/licensing", "/README.md", "/LICENSE", "/AUTHORS.md"]
 
@@ -110,12 +104,8 @@ filterwarnings = [
     "ignore",
     "ignore::DeprecationWarning",
     "ignore::PendingDeprecationWarning",
-    # Later entries win, so this one survives the blanket "ignore" above.
-    # Several field/util tests define throwaway models inside the test body, and
-    # the app registry is keyed on (app_label, model_name) — two tests reusing a
-    # name silently overwrite each other's entry, leaving a test asserting against
-    # a class it did not define. Django warns about it; make that warning fatal so
-    # the collision cannot creep back in unnoticed.
+    # Later entries win over "ignore". Tests that reuse a throwaway model name
+    # silently replace each other's registry entry, so the warning is fatal.
     "error:Model '.*' was already registered:RuntimeWarning",
 ]
 
