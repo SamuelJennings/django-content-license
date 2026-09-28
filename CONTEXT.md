@@ -1,6 +1,6 @@
 # Django Content License — Domain Model
 
-<!-- Ubiquitous language for this repo. Drafted by forge-onboard from the source (not the
+<!-- Ubiquitous language for this repo. Drafted from the source (not the
      README, which currently over-describes the code — see "Open questions"). Terms marked
      [CONFIRM] need Sam's ruling before they are load-bearing. -->
 

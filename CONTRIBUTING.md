@@ -66,7 +66,9 @@ Ready to contribute? Here's how to set up `django-content-license` for local dev
 
    Now you can make your changes locally.
 
-5. Write tests for any code changes where applicable.
+5. Write tests for any code changes where applicable, following
+   [the testing standards](docs/contributing/standards/testing.md). Docstrings and comments follow
+   [the code documentation standards](docs/contributing/standards/code-documentation.md).
 
 > [!Note]
 > This package provides some helpful utility scripts via the `invoke` package that help with code quality and testing. Invoke is installed with the dev dependencies, so you should be able to run the following commands from the root of the project with `uv run`. To see what commands are available to you, run:
@@ -75,11 +77,11 @@ Ready to contribute? Here's how to set up `django-content-license` for local dev
 
 6. When you're done making changes, check that your changes pass all code quality checks.
 
-    $ invoke check
+    $ uv run pre-commit run --all-files
 
-7. Now make sure all tests are passing, including testing other Python versions with tox
+7. Now make sure all tests are passing
 
-    $ invoke test
+    $ uv run invoke test
 
 8. Commit your changes and push your branch to GitHub::
 

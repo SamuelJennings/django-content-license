@@ -5,7 +5,11 @@
 [![codecov](https://codecov.io/gh/SamuelJennings/django-content-license/branch/main/graph/badge.svg)](https://codecov.io/gh/SamuelJennings/django-content-license)
 ![GitHub](https://img.shields.io/github/license/SamuelJennings/django-content-license)
 ![GitHub last commit](https://img.shields.io/github/last-commit/SamuelJennings/django-content-license)
-<!-- ![PyPI](https://img.shields.io/pypi/v/django-content-license) -->
+[![PyPI](https://img.shields.io/pypi/v/django-content-license)](https://pypi.org/project/django-content-license/)
+![Python versions](https://img.shields.io/pypi/pyversions/django-content-license)
+![Django versions](https://img.shields.io/pypi/djversions/django-content-license)
+
+Store license information alongside your Django data models.
 
 A Django app that allows you to associate content licenses with model instances and display appropriate attribution in your HTML templates. Perfect for academic datasets, research publications, creative content, and any application where proper licensing and attribution are important.
 
@@ -34,7 +38,12 @@ When choices collide: generic beats specific, simplicity beats flexibility, and 
 stays configurable: a license defines what it needs, and one that only needs its title shown
 simply doesn't use the feature.
 
-Where it's headed is tracked in [GOALS.md](GOALS.md).
+Where it's headed is tracked in [GOALS.md](https://github.com/SamuelJennings/django-content-license/blob/main/GOALS.md).
+
+## Requirements
+
+- Python 3.11 or later
+- Django 5.2 LTS, 6.0 or 6.1
 
 ## Quick Start
 
@@ -220,7 +229,7 @@ license.clean()  # Raises ValidationError
 
 ## Testing
 
-The suite is written as Django `TestCase` classes and run with pytest (pytest-django).
+The suite uses pytest and pytest-django, with tests grouped into `Test<Subject>` classes.
 
 ### Running Tests
 
@@ -234,9 +243,9 @@ uv run pytest --cov=licensing --cov-report=html
 
 ### Test Organization
 
-- `tests/test_models.py` - `License` model functionality
-- `tests/test_fields.py` - `LicenseField` and attribution rendering
-- `tests/test_utils.py` - attribution/utility helpers
+Each test module mirrors the source module it tests: `tests/test_models.py` covers
+`licensing/models.py`, and so on. The full rules are in the
+[testing standards](https://github.com/SamuelJennings/django-content-license/blob/main/docs/contributing/standards/testing.md).
 
 ### Writing Your Own Tests
 
@@ -367,7 +376,7 @@ class SoftwareProject(models.Model):
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! Please see our [Contributing Guide](https://github.com/SamuelJennings/django-content-license/blob/main/CONTRIBUTING.md) for details.
 
 ### Development Setup
 
@@ -388,15 +397,14 @@ uv run pre-commit run --all-files
 
 ### Code Quality
 
-We maintain high code quality standards:
-- 100% test coverage target
-- Type hints for all public APIs
-- Comprehensive documentation
-- Regular security audits
+- Coverage floors of 90% for the project and 85% for each change, set in `codecov.yml`
+- Tests follow the [testing standards](https://github.com/SamuelJennings/django-content-license/blob/main/docs/contributing/standards/testing.md)
+- Docstrings and comments follow the [code documentation standards](https://github.com/SamuelJennings/django-content-license/blob/main/docs/contributing/standards/code-documentation.md)
+- ruff, mypy and deptry run on every commit and in CI
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/SamuelJennings/django-content-license/blob/main/LICENSE) file for details.
 
 ## Support
 
@@ -405,7 +413,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Changelog
 
-See [HISTORY.md](HISTORY.md) for a complete changelog.
+See [HISTORY.md](https://github.com/SamuelJennings/django-content-license/blob/main/HISTORY.md) for a complete changelog.
 
 ## Related Projects
 

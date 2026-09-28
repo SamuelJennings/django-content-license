@@ -5,8 +5,8 @@
 ### Changed (BREAKING)
 
 * **Support matrix narrowed to actively-supported releases**: Python **≥3.11** (was ≥3.10)
-  and Django **5.2 LTS, 6.0 and 6.1** (dropped 3.2/4.1/4.2/5.0). Aligns with the django-mvp family
-  standard. Consumers on older Python/Django should pin an earlier release.
+  and Django **5.2 LTS, 6.0 and 6.1** (dropped 3.2/4.1/4.2/5.0). Consumers on older
+  Python/Django should pin an earlier release.
 
 ### Internal / tooling
 
