@@ -18,7 +18,7 @@ licensing and attribution matter. See `CONTEXT.md` for the ubiquitous language.
 - **Lint/format:** `uv run pre-commit run --all-files` (ruff lint + ruff-format; local mypy + deptry hooks)
 - **Type-check:** `uv run mypy licensing/`
 - **Build:** `uv build`
-- **Standards:** `docs/contributing/standards/testing.md` and `docs/contributing/standards/code-documentation.md`
+- **Standards:** `docs/contributing/standards/testing.md`, `docs/contributing/standards/code-documentation.md` and `docs/contributing/standards/django.md`
 
 ## Agent skills
 
