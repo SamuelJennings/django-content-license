@@ -34,6 +34,7 @@ uv run invoke test
 
 Tests follow [the testing standards](docs/contributing/standards/testing.md), and docstrings and
 comments follow [the code documentation standards](docs/contributing/standards/code-documentation.md).
+Where code lives is set out in [the Django standards](docs/contributing/standards/django.md).
 
 ### Manual Pre-commit Hook Updates
 

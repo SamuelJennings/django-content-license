@@ -68,7 +68,8 @@ Ready to contribute? Here's how to set up `django-content-license` for local dev
 
 5. Write tests for any code changes where applicable, following
    [the testing standards](docs/contributing/standards/testing.md). Docstrings and comments follow
-   [the code documentation standards](docs/contributing/standards/code-documentation.md).
+   [the code documentation standards](docs/contributing/standards/code-documentation.md). Where code
+   lives is set out in [the Django standards](docs/contributing/standards/django.md).
 
 > [!Note]
 > This package provides some helpful utility scripts via the `invoke` package that help with code quality and testing. Invoke is installed with the dev dependencies, so you should be able to run the following commands from the root of the project with `uv run`. To see what commands are available to you, run:

@@ -400,6 +400,7 @@ uv run pre-commit run --all-files
 - Coverage floors of 90% for the project and 85% for each change, set in `codecov.yml`
 - Tests follow the [testing standards](https://github.com/SamuelJennings/django-content-license/blob/main/docs/contributing/standards/testing.md)
 - Docstrings and comments follow the [code documentation standards](https://github.com/SamuelJennings/django-content-license/blob/main/docs/contributing/standards/code-documentation.md)
+- Where code lives follows the [Django standards](https://github.com/SamuelJennings/django-content-license/blob/main/docs/contributing/standards/django.md)
 - ruff, mypy and deptry run on every commit and in CI
 
 ## License
