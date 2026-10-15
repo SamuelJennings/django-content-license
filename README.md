@@ -1,13 +1,15 @@
 # Django Content License
 
-[![Github Build](https://github.com/SamuelJennings/django-content-license/actions/workflows/build.yml/badge.svg)](https://github.com/SamuelJennings/django-content-license/actions/workflows/build.yml)
-[![Github Tests](https://github.com/SamuelJennings/django-content-license/actions/workflows/tests.yml/badge.svg)](https://github.com/SamuelJennings/django-content-license/actions/workflows/tests.yml)
-[![codecov](https://codecov.io/gh/SamuelJennings/django-content-license/branch/main/graph/badge.svg)](https://codecov.io/gh/SamuelJennings/django-content-license)
-![GitHub](https://img.shields.io/github/license/SamuelJennings/django-content-license)
-![GitHub last commit](https://img.shields.io/github/last-commit/SamuelJennings/django-content-license)
+[![Tests](https://github.com/SamuelJennings/django-content-license/actions/workflows/tests.yml/badge.svg)](https://github.com/SamuelJennings/django-content-license/actions/workflows/tests.yml)
+[![Build](https://github.com/SamuelJennings/django-content-license/actions/workflows/build.yml/badge.svg)](https://github.com/SamuelJennings/django-content-license/actions/workflows/build.yml)
+[![Publish](https://github.com/SamuelJennings/django-content-license/actions/workflows/publish.yml/badge.svg)](https://github.com/SamuelJennings/django-content-license/actions/workflows/publish.yml)
+[![Coverage](https://codecov.io/gh/SamuelJennings/django-content-license/branch/main/graph/badge.svg)](https://codecov.io/gh/SamuelJennings/django-content-license)
 [![PyPI](https://img.shields.io/pypi/v/django-content-license)](https://pypi.org/project/django-content-license/)
-![Python versions](https://img.shields.io/pypi/pyversions/django-content-license)
-![Django versions](https://img.shields.io/pypi/djversions/django-content-license)
+[![Development status](https://img.shields.io/pypi/status/django-content-license)](https://pypi.org/project/django-content-license/)
+[![Python](https://img.shields.io/pypi/pyversions/django-content-license)](https://pypi.org/project/django-content-license/)
+[![Django](https://img.shields.io/pypi/djversions/django-content-license)](https://pypi.org/project/django-content-license/)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Licence](https://img.shields.io/github/license/SamuelJennings/django-content-license)](https://github.com/SamuelJennings/django-content-license/blob/main/LICENSE)
 
 Store license information alongside your Django data models.
 
