@@ -8,6 +8,13 @@
   and Django **5.2 LTS, 6.0 and 6.1** (dropped 3.2/4.1/4.2/5.0). Consumers on older
   Python/Django should pin an earlier release.
 
+### Fixed
+
+* Upgrading a database with more than one licence to 0.3.0 no longer fails on the unique
+  `canonical_url` index. Migration `0002` now copies each licence's `URL` into
+  `canonical_url` before the constraint is added, so no licence loses its URL. The migration
+  can also be reversed on a populated table, copying `canonical_url` back into `URL`.
+
 ### Internal / tooling
 
 * The package is built with hatchling instead of poetry-core, and developed with uv instead
