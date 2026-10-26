@@ -4,6 +4,16 @@ from django.db import migrations, models
 import django.utils.timezone
 
 
+def copy_url_to_canonical_url(apps, schema_editor):
+    License = apps.get_model('licensing', 'License')
+    License.objects.update(canonical_url=models.F('URL'))
+
+
+def copy_canonical_url_to_url(apps, schema_editor):
+    License = apps.get_model('licensing', 'License')
+    License.objects.update(URL=models.F('canonical_url'))
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -15,15 +25,19 @@ class Migration(migrations.Migration):
             name='license',
             options={'ordering': ['name'], 'verbose_name': 'license', 'verbose_name_plural': 'licenses'},
         ),
-        migrations.RemoveField(
+        # URL is made nullable before it is removed, so that reversing this
+        # migration can add it back to a populated table and refill it.
+        migrations.AlterField(
             model_name='license',
             name='URL',
+            field=models.URLField(help_text='A permanent online resource describing the license', null=True, unique=True, verbose_name='canonical URL'),
         ),
+        # canonical_url starts nullable and not unique, is filled from URL,
+        # and only then gets its constraints.
         migrations.AddField(
             model_name='license',
             name='canonical_url',
-            field=models.URLField(default='', help_text='A permanent online resource describing the license', max_length=500, unique=True, verbose_name='canonical URL'),
-            preserve_default=False,
+            field=models.URLField(help_text='A permanent online resource describing the license', max_length=500, null=True, verbose_name='canonical URL'),
         ),
         migrations.AddField(
             model_name='license',
@@ -51,6 +65,16 @@ class Migration(migrations.Migration):
             name='text',
             field=models.TextField(default='', help_text='The full text of the license', verbose_name='text'),
             preserve_default=False,
+        ),
+        migrations.RunPython(copy_url_to_canonical_url, copy_canonical_url_to_url),
+        migrations.AlterField(
+            model_name='license',
+            name='canonical_url',
+            field=models.URLField(help_text='A permanent online resource describing the license', max_length=500, unique=True, verbose_name='canonical URL'),
+        ),
+        migrations.RemoveField(
+            model_name='license',
+            name='URL',
         ),
         migrations.AddIndex(
             model_name='license',
