@@ -11,16 +11,18 @@ Currently, the package includes the following languages:
 
 ## Adding New Translations
 
+Run every `makemessages` and `compilemessages` command from inside the `licensing/` directory so only the package source is scanned. The `example/` app carries no translation markup and is never translated.
+
 To add a new language translation:
 
 1. **Create locale directory structure:**
    ```bash
-   python manage.py makemessages -l <language_code>
+   (cd licensing && django-admin makemessages -l <language_code>)
    ```
 
    For example, for French:
    ```bash
-   python manage.py makemessages -l fr
+   (cd licensing && django-admin makemessages -l fr)
    ```
 
 2. **Translate the messages:**
@@ -28,7 +30,7 @@ To add a new language translation:
 
 3. **Compile translations:**
    ```bash
-   python manage.py compilemessages
+   (cd licensing && django-admin compilemessages)
    ```
 
 ## Updating Existing Translations
@@ -36,13 +38,13 @@ To add a new language translation:
 To update translations when new translatable strings are added:
 
 ```bash
-python manage.py makemessages --all
+(cd licensing && django-admin makemessages --all)
 ```
 
 Then update the `.po` files and compile:
 
 ```bash
-python manage.py compilemessages
+(cd licensing && django-admin compilemessages)
 ```
 
 ## Key Translatable Strings
