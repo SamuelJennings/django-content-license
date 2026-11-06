@@ -3,7 +3,6 @@
 from django.contrib import admin
 from django.template.defaultfilters import linebreaks
 from django.utils.html import mark_safe
-from django.utils.translation import gettext as _
 
 from licensing.models import License
 
@@ -44,7 +43,7 @@ class LicenseAdmin(admin.ModelAdmin):
         """
         return mark_safe(f"<nobr>{obj.name}</nobr>")
 
-    get_name_display.short_description = _("name")
+    get_name_display.short_description = "name"
 
     def get_canonical_url_display(self, obj):
         """Return the canonical URL as a link that opens in a new tab.
@@ -59,7 +58,7 @@ class LicenseAdmin(admin.ModelAdmin):
             f'<a href="{obj.canonical_url}" target="_blank">{obj.canonical_url}</a>'
         )
 
-    get_canonical_url_display.short_description = _("canonical URL")
+    get_canonical_url_display.short_description = "canonical URL"
 
     def get_description_display(self, obj):
         """Return the description as paragraphs, or a placeholder when empty.
@@ -72,6 +71,6 @@ class LicenseAdmin(admin.ModelAdmin):
         """
         if obj.description:
             return mark_safe(linebreaks(obj.description))
-        return _("No description")
+        return "No description"
 
-    get_description_display.short_description = _("description")
+    get_description_display.short_description = "description"
