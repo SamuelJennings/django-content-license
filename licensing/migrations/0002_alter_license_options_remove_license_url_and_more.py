@@ -6,12 +6,16 @@ import django.utils.timezone
 
 def copy_url_to_canonical_url(apps, schema_editor):
     License = apps.get_model('licensing', 'License')
-    License.objects.update(canonical_url=models.F('URL'))
+    License.objects.using(schema_editor.connection.alias).update(
+        canonical_url=models.F('URL')
+    )
 
 
 def copy_canonical_url_to_url(apps, schema_editor):
     License = apps.get_model('licensing', 'License')
-    License.objects.update(URL=models.F('canonical_url'))
+    License.objects.using(schema_editor.connection.alias).update(
+        URL=models.F('canonical_url')
+    )
 
 
 class Migration(migrations.Migration):
