@@ -1,7 +1,7 @@
 """Upgrading a populated licence table through migration 0002."""
 
 import pytest
-from django.db import connection
+from django.db import connection, connections
 from django.db.migrations.executor import MigrationExecutor
 
 INITIAL = [("licensing", "0001_initial")]
@@ -65,3 +65,31 @@ class TestMigration0002:
         License = migrate_to(INITIAL)
 
         assert License.objects.get(name="MIT").URL == "https://opensource.org/licenses/MIT"
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", "other"])
+class TestMigration0002OnASecondDatabase:
+    def test_it_migrates_the_database_it_is_given(self):
+        other = MigrationExecutor(connections["other"])
+        leaf = other.loader.graph.leaf_nodes("licensing")
+        other.migrate([("licensing", None)])
+        other.loader.build_graph()
+        other.migrate(INITIAL)
+        License = other.loader.project_state(INITIAL).apps.get_model(
+            "licensing", "License"
+        )
+        License.objects.using("other").create(
+            name="MIT", slug="mit", URL="https://opensource.org/licenses/MIT"
+        )
+
+        other.loader.build_graph()
+        other.migrate(TARGET)
+
+        License = other.loader.project_state(TARGET).apps.get_model(
+            "licensing", "License"
+        )
+        assert License.objects.using("other").get(name="MIT").canonical_url == (
+            "https://opensource.org/licenses/MIT"
+        )
+        other.loader.build_graph()
+        other.migrate(leaf)

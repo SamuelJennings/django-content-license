@@ -10,6 +10,8 @@
 
 ### Fixed
 
+* Migration `0002` copies URLs in the database being migrated. It used to read and write the
+  default database, so `migrate --database=<alias>` failed once the default one was migrated.
 * Upgrading a database with more than one licence to 0.3.0 no longer fails on the unique
   `canonical_url` index. Migration `0002` now copies each licence's `URL` into
   `canonical_url` before the constraint is added, so no licence loses its URL. The migration
